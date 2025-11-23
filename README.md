@@ -1,9 +1,9 @@
 # Plano de Experimento – Scoping e Planejamento
-
+## 1. Identificação básica
 ### 1.1 Título do experimento
 Sustentabilidade no Desenvolvimento de Software: Uma Comparação entre Duplicação de Código e Reutilização por Abstração
 
-## 1.2 ID / código
+### 1.2 ID / código
  ES-SUST-2025-01
 
 ### 1.3 Versão do documento e histórico de revisão
@@ -22,7 +22,7 @@ Fernando Ibrahim — responsável pelo desenho conceitual, hipóteses, execuçã
 ### 1.7 Projeto / produto / iniciativa relacionada
 Este experimento está relacionado à iniciativa de pesquisa acadêmica sobre boas práticas de design de software, incluindo decisões arquiteturais que impactam manutenibilidade, custo cognitivo e sustentabilidade de longo prazo.
 
-
+## 2. Contexto e problema
 
 ### 2.1 Descrição do problema / oportunidade
 Este estudo investiga um dilema recorrente no desenvolvimento de software orientado a objetos: o que é mais sustentável no longo prazo, duplicar código ou reutilizá-lo por meio de abstrações? De um lado, existe a crença consolidada de que duplicação de código é sempre um “mau cheiro”, associada a inconsistências, aumento de bugs e retrabalho. De outro, abstrações são frequentemente tratadas como a solução ideal, pois promovem reaproveitamento e redução aparente de redundância. Na prática, porém, muitos esforços de abstração introduzidos apenas para eliminar duplicações acabam gerando acoplamento excessivo, interfaces genéricas demais, hierarquias profundas de classes e estruturas difíceis de evoluir. Isso é especialmente crítico em contextos ágeis, em que diferentes módulos, serviços e camadas evoluem em ritmos distintos. Em contrapartida, pequenas duplicações locais, bem delimitadas em classes ou contextos específicos, podem tornar o sistema mais previsível, legível e independente. A oportunidade deste trabalho é justamente analisar, com base em evidências e reflexão teórica, em quais cenários a duplicação controlada pode ser mais sustentável do que abstrações generalizadas, e quando o investimento em abstrações realmente se justifica, considerando a manutenibilidade, o custo cognitivo e a evolução contínua de sistemas orientados a objetos.
