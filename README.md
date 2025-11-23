@@ -33,9 +33,9 @@ Este estudo investiga um dilema recorrente no desenvolvimento de software orient
 O estudo se insere no contexto de desenvolvimento de software orientado a objetos em projetos de código aberto (OSS), mantidos em repositórios públicos como GitHub ou GitLab, nos quais código, histórico de commits, discussões técnicas e decisões de design são transparentes e construídos por comunidades distribuídas de mantenedores e contribuidores. Esses projetos costumam usar frameworks orientados a objetos, padrões de projeto, automação de build, testes, integração contínua e fluxos de contribuição baseados em pull requests e revisão de código, registrando em issues e documentos o racional por trás de refatorações, novas abstrações ou duplicações locais. Esse ambiente oferece um “laboratório natural” para observar como desenvolvedores, na prática, negociam o trade-off entre duplicação e reutilização e como essas decisões influenciam a sustentabilidade técnica e a evolução histórica dos sistemas ao longo do tempo.
 
 ### 2.3 Trabalhos e evidências prévias (internos e externos)
-- Acoplamento e dificuldade de evolução ![Ratzinger et al.](https://ar5iv.labs.arxiv.org/html/2502.04073)
-- Duplicação de código e manutenibilidade ![Eman Abdullah AlOmar.](https://ar5iv.labs.arxiv.org/html/2502.04073)
-- CK Metrics: ![Chidamber & Kemerer, 1994](https://ieeexplore.ieee.org/document/1191795)
+- Acoplamento e dificuldade de evolução [Ratzinger et al.](https://ar5iv.labs.arxiv.org/html/2502.04073)
+- Duplicação de código e manutenibilidade [Eman Abdullah AlOmar.](https://ar5iv.labs.arxiv.org/html/2502.04073)
+- CK Metrics: [Chidamber & Kemerer, 1994](https://ieeexplore.ieee.org/document/1191795)
 
 
 ### 2.4 Referencial teórico e empírico essencial
