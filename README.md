@@ -48,3 +48,81 @@ Princípios de design OO (DRY, SRP, encapsulamento): princípios como Don’t Re
 Duplicação de código e code clones: a literatura de code clones fornece o embasamento teórico para tratar duplicação como fenômeno mensurável e recorrente em sistemas OO, permitindo discutir quando a eliminação de clones por abstração melhora a manutenibilidade e quando a duplicação local pode ser um compromisso aceitável ou até desejável.
 
 Sustentabilidade técnica e dívida técnica em OSS: o conceito de sustentabilidade técnica integra manutenibilidade, simplicidade, clareza e custo de evolução ao longo do tempo. Estudos sobre dívida técnica em projetos OSS mostram como decisões de design (incluindo abstrações excessivas ou duplicação descontrolada) se acumulam e impactam a evolução histórica do sistema, servindo como base empírica para formular e testar as hipóteses deste experimento.
+
+## 3. Objetivos e questões (Goal / Question / Metric)
+
+### 3.1 Objetivo geral (Goal template)
+O objetivo geral deste estudo, seguindo o template GQM, é analisar padrões de duplicação de código e reutilização por abstrações em sistemas de software orientados a objetos de código aberto, com o propósito de avaliar seu impacto na manutenibilidade, no histórico de mudanças e na longevidade do software, com respeito a indicadores estruturais como acoplamento, complexidade e ocorrência de clones, sob a perspectiva de pesquisadores e engenheiros de software interessados em boas práticas de design, no contexto de projetos OSS de médio e grande porte mantidos colaborativamente em repositórios públicos.
+
+### 3.2 Objetivos específicos
+- O1 – Caracterizar o cenário atual
+Identificar e descrever o perfil de duplicação de código e de reutilização por abstrações em um conjunto de projetos OSS orientados a objetos (por exemplo, volume de clones, uso de classes abstratas, interfaces, hierarquias de herança e módulos reutilizáveis).
+- O2 – Relacionar estrutura e manutenibilidade
+Investigar a correlação entre níveis de duplicação/abstração e métricas estruturais de manutenibilidade, como acoplamento, complexidade de classes e coesão, buscando evidências de quais padrões tornam o código mais ou menos fácil de manter.
+- O3 – Conectar padrões estruturais ao histórico de mudanças
+Analisar como a presença de duplicação de código e de abstrações compartilhadas se reflete no histórico de mudanças dos projetos (frequência de modificações, arquivos frequentemente alterados em conjunto, hotspots de manutenção).
+- O4 – Explorar impacto na longevidade do software
+Avaliar em que medida diferentes combinações de duplicação e abstração parecem influenciar a longevidade e a evolução contínua dos projetos (por exemplo, sobrevivência de módulos, evolução de componentes centrais, acúmulo de débito técnico).
+- O5 – Derivar recomendações práticas
+Sintetizar, a partir dos resultados empíricos, recomendações para apoiar desenvolvedores e arquitetos na decisão entre manter duplicações locais ou introduzir novas abstrações, considerando manutenibilidade, histórico de mudanças e sustentabilidade de longo prazo.
+
+
+### 3.3 Questões de pesquisa / de negócio
+
+**O1 – Caracterizar o cenário atual**
+
+Identificar e descrever o perfil de duplicação de código e de reutilização por abstrações em um conjunto de projetos OSS orientados a objetos.
+
+Questões associadas:
+
+- **Q1.1:** Qual é o nível de duplicação de código (proporção de clones, quantidade de grupos de clones) nos projetos analisados?  
+- **Q1.2:** Quais mecanismos de abstração são mais utilizados (classes abstratas, interfaces, hierarquias de herança, módulos utilitários reutilizados) nesses projetos?  
+- **Q1.3:** Como esses padrões de duplicação e abstração variam entre projetos de diferentes tamanhos, domínios e níveis de maturidade?
+
+
+**O2 – Relacionar estrutura e manutenibilidade**
+
+Investigar a correlação entre níveis de duplicação/abstração e métricas estruturais de manutenibilidade.
+
+Questões associadas:
+
+- **Q2.1:** Projetos com maior duplicação de código apresentam maior acoplamento entre módulos do que projetos com menos duplicação?  
+- **Q2.2:** A presença de abstrações compartilhadas está associada a menor complexidade média de classes e métodos (por exemplo, menor WMC, menor complexidade ciclomática)?  
+- **Q2.3:** Quais combinações de métricas estruturais (duplicação, abstração, acoplamento, coesão) estão mais fortemente associadas a melhores indicadores de manutenibilidade?
+
+---
+
+**O3 – Conectar padrões estruturais ao histórico de mudanças**
+
+Analisar como duplicação e abstrações se refletem no histórico de mudanças dos projetos.
+
+Questões associadas:
+
+- **Q3.1:** Trechos de código duplicado tendem a aparecer com maior frequência em commits de correção ou evolução do que trechos não duplicados?  
+- **Q3.2:** Arquivos que contêm abstrações centrais (classes base, interfaces, módulos compartilhados) aparecem com que frequência em commits que envolvem múltiplos módulos ao mesmo tempo?  
+- **Q3.3:** Existem evidências de que clones de código estão associados a “hotspots” de manutenção, isto é, áreas do sistema com alta taxa de mudanças ao longo do tempo?
+
+---
+
+**O4 – Explorar impacto na longevidade do software**
+
+Avaliar em que medida padrões de duplicação/abstração parecem influenciar longevidade e evolução contínua dos projetos.
+
+Questões associadas:
+
+- **Q4.1:** Projetos com menores níveis de duplicação de código e/ou com abstrações mais consolidadas apresentam maior longevidade em termos de tempo de atividade e continuidade de commits?  
+- **Q4.2:** Módulos centrais que adotam abstrações bem definidas permanecem mais tempo estáveis (com menos reescritas completas) do que módulos com alto nível de duplicação?  
+- **Q4.3:** Há indícios de que a redução de duplicação e de acoplamento ao longo da história do projeto esteja associada à sua capacidade de continuar evoluindo sem grandes reescritas (rewrites) ou abandonos?
+
+---
+
+**O5 – Derivar recomendações práticas**
+
+Sintetizar recomendações para apoiar decisões entre manter duplicações locais ou introduzir abstrações.
+
+Questões associadas:
+
+- **Q5.1:** Em quais cenários observados (tipo de módulo, frequência de mudança, criticidade) a duplicação controlada se mostrou um compromisso mais vantajoso do que a criação de novas abstrações?  
+- **Q5.2:** Existem limiares quantitativos (por exemplo, nível de duplicação, grau de acoplamento, número de ocorrências de um clone) a partir dos quais a refatoração em direção a uma abstração compartilhada passa a ser claramente recomendada?  
+- **Q5.3:** Que diretrizes práticas podem ser propostas para que desenvolvedores e arquitetos decidam quando aceitar duplicação local e quando investir na criação ou melhoria de abstrações compartilhadas?
+
