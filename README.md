@@ -126,3 +126,115 @@ Questões associadas:
 - **Q5.2:** Existem limiares quantitativos (por exemplo, nível de duplicação, grau de acoplamento, número de ocorrências de um clone) a partir dos quais a refatoração em direção a uma abstração compartilhada passa a ser claramente recomendada?  
 - **Q5.3:** Que diretrizes práticas podem ser propostas para que desenvolvedores e arquitetos decidam quando aceitar duplicação local e quando investir na criação ou melhoria de abstrações compartilhadas?
 
+### 4. Escopo e contexto do experimento  
+
+#### 4.1 Escopo funcional / de processo (incluído e excluído)  
+
+O experimento tem como escopo principal a análise estrutural de código fonte em sistemas orientados a objetos de código aberto, com foco específico em aspectos de duplicação de código e reutilização por abstrações. Serão incluídos no estudo os módulos e artefatos que representam o **código de produção**: classes de domínio, serviços, adaptadores, utilitários e componentes centrais que participam diretamente da lógica do sistema. As atividades cobertas concentram-se em **extração de métricas estáticas**, detecção de clones, análise de histórico de mudanças em sistemas de controle de versão e interpretação dos resultados à luz da literatura de engenharia de software.
+
+Ficam explicitamente **fora do escopo** atividades de intervenção direta nas equipes ou nos processos organizacionais dos projetos OSS analisados, bem como qualquer alteração no fluxo de desenvolvimento desses projetos. Também serão excluídos: código meramente gerado automaticamente (stubs, código de ferramentas), scripts de infraestrutura, arquivos de configuração e, salvo uso pontual como evidência complementar, **testes automatizados**, uma vez que o foco do estudo está nas decisões de design do código de produção. Processos internos de empresas que eventualmente usam esses projetos também não são objeto de investigação; o experimento se restringe ao que está disponível publicamente nos repositórios.  
+
+---
+
+#### 4.2 Contexto do estudo (tipo de organização, projeto, experiência)  
+
+O estudo será conduzido no contexto de **projetos de software de código aberto**, hospedados em plataformas públicas como GitHub ou GitLab, mantidos por comunidades distribuídas de desenvolvedores. Esses projetos variam de pequeno a grande porte, abrangendo diferentes domínios de aplicação (por exemplo, bibliotecas, frameworks, serviços de backend) e diferentes níveis de maturidade (projetos mais recentes e projetos com longa história de evolução).
+
+Do ponto de vista organizacional, trata-se de um ambiente **descentralizado e colaborativo**, no qual não há uma única empresa controlando o processo, mas sim mantenedores principais, contribuidores frequentes e participantes ocasionais. Os “participantes” do estudo, no sentido de agentes ativos, são os pesquisadores e engenheiros de software responsáveis por coletar, extrair e interpretar as métricas; os desenvolvedores OSS atuam como sujeitos indiretos, na medida em que suas decisões de design constituem o objeto de análise. Pressupõe-se um público com experiência variada em desenvolvimento orientado a objetos, padrões de projeto e práticas de refatoração, refletida no próprio código e na qualidade estrutural dos projetos analisados.  
+
+---
+
+#### 4.3 Premissas  
+
+O plano do experimento se apoia em algumas premissas fundamentais. Assume-se que:  
+
+1. **Os repositórios OSS selecionados permanecerão acessíveis** e com histórico de commits íntegro durante todo o período de coleta e análise.  
+2. As **ferramentas de análise estática e detecção de clones** escolhidas serão capazes de processar o código orientado a objetos com precisão razoável, identificando classes, interfaces, clones e métricas como CBO e WMC.  
+3. O histórico de mudanças (commits, tags, mensagens e, quando possível, issues) é **suficientemente consistente** para permitir inferências sobre evolução, hotspots e longevidade do software.  
+4. As **métricas estruturais** adotadas (duplicação, acoplamento, complexidade, etc.) são bons proxies para atributos de manutenibilidade, mesmo que não capturem todos os aspectos qualitativos envolvidos.  
+5. A seleção de projetos OSS será **minimamente diversificada**, de modo a abranger diferentes domínios e tamanhos, permitindo comparações significativas.  
+
+Essas premissas não podem ser garantidas de forma absoluta, mas são consideradas plausíveis para viabilizar o estudo.  
+
+---
+
+#### 4.4 Restrições  
+
+O experimento também está sujeito a restrições práticas. O **tempo disponível** para coleta, processamento e análise de dados limita a quantidade de projetos e o grau de profundidade com que cada um pode ser estudado. Existem restrições de **infraestrutura computacional**, especialmente para processar repositórios grandes com ferramentas de detecção de clones e cálculo de métricas em múltiplos snapshots históricos.
+
+Há, ainda, limitações relacionadas às **ferramentas escolhidas**: cada analisador estático possui seus próprios limites de linguagem, versão, escala e precisão. Alterações nas APIs das plataformas de hospedagem de código ou limitações de taxa (rate limiting) podem restringir o acesso automatizado a dados. Finalmente, o estudo é conduzido sem intervenção formal nas comunidades dos projetos, o que significa que não é possível aplicar questionários ou entrevistas para complementar a interpretação das métricas com percepção subjetiva dos desenvolvedores dentro do escopo inicial.  
+
+---
+
+#### 4.5 Limitações previstas  
+
+Alguns fatores podem comprometer a **generalização dos resultados**. Em primeiro lugar, o foco em projetos de código aberto implica que as conclusões podem não se transferir integralmente para contextos de software proprietário, nos quais processos, restrições e pressões de negócio são diferentes. Em segundo lugar, a **amostra de projetos** provavelmente não será completamente representativa de todos os tipos de sistemas orientados a objetos, o que limita a validade externa.
+
+Além disso, a interpretação de **métricas estruturais e históricas** está sujeita a ameaças de validade: correlações observadas entre duplicação, abstração, acoplamento e manutenibilidade podem ser influenciadas por fatores não controlados, como estilo de desenvolvimento, qualidade das revisões de código ou mudanças na equipe ao longo do tempo. Por fim, as ferramentas de análise podem introduzir **erros de medição**, seja ao detectar clones, seja ao calcular métricas orientadas a objetos, o que precisa ser considerado ao interpretar os resultados.  
+
+---
+
+### 5. Stakeholders e impacto esperado  
+
+#### 5.1 Stakeholders principais  
+
+Os principais stakeholders deste estudo são:  
+
+- **Pesquisadores e estudantes de engenharia de software**, interessados em evidências empíricas sobre o impacto de duplicação e abstração na manutenibilidade e longevidade de sistemas.  
+- **Desenvolvedores e mantenedores de projetos OSS**, cujas decisões de design podem ser diretamente informadas pelas recomendações produzidas.  
+- **Arquitetos de software e líderes técnicos**, responsáveis por definir diretrizes de design, padrões de refatoração e estratégias de reutilização de código em sistemas orientados a objetos.  
+- **Gestores de produto e de engenharia**, que precisam equilibrar investimento em refatorações estruturais com demandas de entrega de novas funcionalidades.  
+
+---
+
+#### 5.2 Interesses e expectativas dos stakeholders  
+
+Pesquisadores esperam obter **resultados quantitativos e qualitativos sólidos**, que avancem o entendimento científico sobre trade-offs entre duplicação e abstração e possam gerar publicações ou novos estudos. Desenvolvedores e mantenedores buscam **orientações práticas e exemplos concretos**, que os ajudem a decidir, na rotina do projeto, quando compensa introduzir uma abstração ou aceitar duplicação local.
+
+Arquitetos e líderes técnicos esperam **evidências que sustentem decisões arquiteturais** de médio e longo prazo, especialmente no que diz respeito à organização modular dos sistemas, ao controle de acoplamento e à priorização de refatorações. Já gestores têm interesse em **indicadores que justifiquem ou não investir em melhorias estruturais**, com impacto em qualidade, risco técnico, produtividade e longevidade do produto. Em síntese, todos os grupos buscam **reduzir incerteza** na tomada de decisão relacionada a design de código.  
+
+---
+
+#### 5.3 Impactos potenciais no processo / produto  
+
+A execução do experimento pode gerar impactos diretos e indiretos nos projetos analisados. No curto prazo, a simples identificação de áreas com alta duplicação, acoplamento ou complexidade pode motivar mantenedores a **abrir issues ou propor refatorações**, o que aumenta temporariamente a carga de trabalho focada em qualidade estrutural. Isso pode afetar prazos de entrega caso as refatorações sejam priorizadas.
+
+Por outro lado, a médio e longo prazo, espera-se que a aplicação das recomendações produzidas pelo estudo contribua para **reduzir defeitos recorrentes**, diminuir o esforço de manutenção e tornar o fluxo de desenvolvimento mais previsível. No nível do produto, mudanças em abstrações centrais, eliminação de clones ou reorganização modular podem alterar a estrutura interna sem alterar, necessariamente, o comportamento funcional visível para usuários finais, mas com impactos relevantes em **qualidade interna, robustez e capacidade de evolução**.  
+
+---
+
+### 6. Riscos de alto nível, premissas e critérios de sucesso  
+
+#### 6.1 Riscos de alto nível (negócio, técnicos, etc.)  
+
+Entre os principais riscos técnicos, destacam-se:  
+
+- **Indisponibilidade ou alteração dos repositórios OSS** durante a coleta de dados, comprometendo a replicação ou continuidade das análises.  
+- **Falhas ou limitações das ferramentas de análise estática e detecção de clones**, que podem impedir o processamento adequado de alguns projetos ou introduzir distorções nas métricas.  
+- **Problemas de desempenho e escala**, especialmente ao analisar projetos muito grandes ou múltiplos snapshots históricos.  
+
+Do ponto de vista de “negócio” da pesquisa, há o risco de que os dados coletados não revelem relações claras entre duplicação, abstração e manutenibilidade, resultando em evidências fracas ou inconclusivas. Existe ainda o risco de **interpretações simplistas** dos resultados que ignorem o contexto particular de cada projeto, levando a recomendações exageradamente genéricas.  
+
+---
+
+#### 6.2 Critérios de sucesso globais (go / no-go)  
+
+O experimento será considerado **bem-sucedido** se:  
+
+1. For possível coletar, para um conjunto significativo de projetos, **métricas estruturais confiáveis** (duplicação, abstração, acoplamento, complexidade) e dados históricos básicos.  
+2. As análises produzirem **respostas claras ou, ao menos, informativas** às principais questões de pesquisa, ainda que nem todas confirmem hipóteses iniciais.  
+3. O estudo gerar um conjunto de **recomendações ou diretrizes práticas** minimamente aplicáveis por desenvolvedores e arquitetos em contextos semelhantes.  
+
+Do ponto de vista de decisão (go/no-go), o experimento sustenta um “go” para mudanças (por exemplo, políticas de refatoração, guidelines de duplicação/abstração) quando as evidências indicarem de forma consistente que certos padrões estruturais se relacionam a melhor manutenibilidade e longevidade, ou quando ficarem claros os contextos em que duplicação ou abstração são mais adequadas. Um “no-go” seria recomendado se os resultados forem muito ruidosos, contraditórios ou claramente insuficientes para embasar qualquer decisão.  
+
+---
+
+#### 6.3 Critérios de parada antecipada (pré-execução)  
+
+O experimento deverá ser adiado ou cancelado antes do início efetivo da coleta e análise de dados se ocorrerem algumas das seguintes situações:  
+
+- **Indisponibilidade de recursos críticos**, como ferramentas de análise (detector de clones, extratores de métricas) ou infraestrutura computacional minimamente adequada.  
+- **Impossibilidade de acesso estável aos repositórios** selecionados, seja por remoção, mudança de visibilidade ou restrições de acesso.  
+- **Mudanças substanciais no escopo ou nos objetivos do estudo** que tornem o desenho atual inadequado, exigindo uma reformulação completa.  
+
+Adicionalmente, se testes preliminares indicarem que as ferramentas escolhidas não conseguem processar de forma confiável os projetos-alvo (por exemplo, falhas sistemáticas, resultados incoerentes), isso configura um motivo forte para interromper ou redesenhar o experimento antes de investir esforço significativo. Esses critérios de parada antecipada existem para evitar o prosseguimento de um estudo que, dadas as condições, não terá condições de produzir resultados com a qualidade científica e a utilidade prática desejadas.
