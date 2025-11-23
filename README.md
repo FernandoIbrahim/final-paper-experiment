@@ -10,8 +10,8 @@ Sustentabilidade no Desenvolvimento de Software: Uma Comparação entre Duplica�
 1.0 - Versão inicial do plano de experimento.
 
 ### 1.4 Datas (criação, última atualização)
-Criado em: 23 de novembro de 2025
-Última atualização: 23 de novembro de 2025
+- Criado em: 23 de novembro de 2025
+- Última atualização: 23 de novembro de 2025
 
 ### 1.5 Autores (nome, área, contato)
 Fernando Ibrahim — fernandofibrahim@gmail.com
