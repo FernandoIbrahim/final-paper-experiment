@@ -126,3 +126,22 @@ Questões associadas:
 - **Q5.2:** Existem limiares quantitativos (por exemplo, nível de duplicação, grau de acoplamento, número de ocorrências de um clone) a partir dos quais a refatoração em direção a uma abstração compartilhada passa a ser claramente recomendada?  
 - **Q5.3:** Que diretrizes práticas podem ser propostas para que desenvolvedores e arquitetos decidam quando aceitar duplicação local e quando investir na criação ou melhoria de abstrações compartilhadas?
 
+### 3.4 Métricas associadas (GQM)
+
+| O  | Q    | M (Métricas associadas – mínimo 2 por questão)                                                                 |
+|----|------|-----------------------------------------------------------------------------------------------------------------|
+| O1 | Q1.1 – Nível de duplicação de código nos projetos | - **%LOC duplicada** (proporção de linhas de código clonadas no projeto)  <br> - **Grupos de clones** (quantidade de grupos de clones identificados) |
+| O1 | Q1.2 – Uso de mecanismos de abstração | - **Classes abstratas** (contagem de classes abstratas por projeto) <br> - **Interfaces** (contagem de interfaces por projeto) |
+| O1 | Q1.3 – Variação de duplicação/abstração por tipo de projeto | - **%LOC duplicada por categoria** (tamanho, domínio, maturidade) <br> - **Abstrações/LOC** ((classes abstratas + interfaces) normalizado por LOC) |
+| O2 | Q2.1 – Relação entre duplicação e acoplamento | - **CBO médio** (Coupling Between Objects) em grupos com alta vs. baixa duplicação <br> - **%LOC duplicada** (usada para segmentar os grupos comparados) |
+| O2 | Q2.2 – Relação entre abstrações e complexidade | - **WMC médio** (Weighted Methods per Class) de classes com e sem abstrações <br> - **Complexidade ciclomática média** dos métodos por classe |
+| O2 | Q2.3 – Estrutura x manutenibilidade | - **Índice de manutenibilidade (MI)** do projeto/módulo <br> - **Correlação entre (%LOC duplicada, CBO, WMC) e MI** |
+| O3 | Q3.1 – Frequência de mudanças em código duplicado | - **%Commits tocando clones** (commits que modificam pelo menos um clone) <br> - **Commits por grupo de clone** (quantidade média de commits por grupo) |
+| O3 | Q3.2 – Impacto de alterações em abstrações centrais | - **Commits que alteram arquivos de abstração** (classes base/interfaces) <br> - **Tamanho médio do change set** em commits que alteram abstrações (arquivos por commit) |
+| O3 | Q3.3 – Clones e hotspots de manutenção | - **Hotspots contendo clones** (arquivos/regiões com alta taxa de mudanças + clones) <br> - **Taxa de mudança em regiões clonadas vs. não clonadas** (mudanças/LOC) |
+| O4 | Q4.1 – Duplicação/abstração e longevidade do projeto | - **Tempo de atividade do projeto** (entre primeiro e último commit significativo) <br> - **Taxa média de commits** (commits por ano) por perfil estrutural |
+| O4 | Q4.2 – Estabilidade de módulos centrais | - **Reescritas completas / grandes refatorações** em módulos centrais <br> - **CBO médio de módulos centrais** (comparando perfis com alta abstração vs. alta duplicação) |
+| O4 | Q4.3 – Evolução estrutural ao longo do tempo | - **Variação da %LOC duplicada por release** <br> - **Variação do CBO médio por release** |
+| O5 | Q5.1 – Cenários onde duplicação controlada é vantajosa | - **Casos de estudo analisados** (duplicação mantida vs. abstração introduzida) <br> - **%Defeitos relacionados a clones vs. abstrações** |
+| O5 | Q5.2 – Limiares para recomendar refatoração | - **Limiar de ocorrências de clone** (número de repetições a partir do qual se recomenda abstrair) <br> - **Limiar de %LOC duplicada por módulo** (acima do qual o módulo é candidato à refatoração) |
+| O5 | Q5.3 – Diretrizes práticas para decisão | - **Guidelines derivadas do estudo** (regras de decisão documentadas) <br> - **% PRs históricos que se encaixariam nas guidelines (estimado)** |
