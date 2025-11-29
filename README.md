@@ -126,6 +126,28 @@ Questões associadas:
 - **Q5.2:** Existem limiares quantitativos (por exemplo, nível de duplicação, grau de acoplamento, número de ocorrências de um clone) a partir dos quais a refatoração em direção a uma abstração compartilhada passa a ser claramente recomendada?  
 - **Q5.3:** Que diretrizes práticas podem ser propostas para que desenvolvedores e arquitetos decidam quando aceitar duplicação local e quando investir na criação ou melhoria de abstrações compartilhadas?
 
+### 3.4 Métricas associadas (GQM)
+
+| O  | Q    | M (Métricas associadas – mínimo 2 por questão)                                                                 |
+|----|------|-----------------------------------------------------------------------------------------------------------------|
+| O1 | Q1.1 – Nível de duplicação de código nos projetos | - **%LOC duplicada** (proporção de linhas de código clonadas no projeto)  <br> - **Grupos de clones** (quantidade de grupos de clones identificados) |
+| O1 | Q1.2 – Uso de mecanismos de abstração | - **Classes abstratas** (contagem de classes abstratas por projeto) <br> - **Interfaces** (contagem de interfaces por projeto) |
+| O1 | Q1.3 – Variação de duplicação/abstração por tipo de projeto | - **%LOC duplicada por categoria** (tamanho, domínio, maturidade) <br> - **Abstrações/LOC** ((classes abstratas + interfaces) normalizado por LOC) |
+| O2 | Q2.1 – Relação entre duplicação e acoplamento | - **CBO médio** (Coupling Between Objects) em grupos com alta vs. baixa duplicação <br> - **%LOC duplicada** (usada para segmentar os grupos comparados) |
+| O2 | Q2.2 – Relação entre abstrações e complexidade | - **WMC médio** (Weighted Methods per Class) de classes com e sem abstrações <br> - **Complexidade ciclomática média** dos métodos por classe |
+| O2 | Q2.3 – Estrutura x manutenibilidade | - **Índice de manutenibilidade (MI)** do projeto/módulo <br> - **Correlação entre (%LOC duplicada, CBO, WMC) e MI** |
+| O3 | Q3.1 – Frequência de mudanças em código duplicado | - **%Commits tocando clones** (commits que modificam pelo menos um clone) <br> - **Commits por grupo de clone** (quantidade média de commits por grupo) |
+| O3 | Q3.2 – Impacto de alterações em abstrações centrais | - **Commits que alteram arquivos de abstração** (classes base/interfaces) <br> - **Tamanho médio do change set** em commits que alteram abstrações (arquivos por commit) |
+| O3 | Q3.3 – Clones e hotspots de manutenção | - **Hotspots contendo clones** (arquivos/regiões com alta taxa de mudanças + clones) <br> - **Taxa de mudança em regiões clonadas vs. não clonadas** (mudanças/LOC) |
+| O4 | Q4.1 – Duplicação/abstração e longevidade do projeto | - **Tempo de atividade do projeto** (entre primeiro e último commit significativo) <br> - **Taxa média de commits** (commits por ano) por perfil estrutural |
+| O4 | Q4.2 – Estabilidade de módulos centrais | - **Reescritas completas / grandes refatorações** em módulos centrais <br> - **CBO médio de módulos centrais** (comparando perfis com alta abstração vs. alta duplicação) |
+| O4 | Q4.3 – Evolução estrutural ao longo do tempo | - **Variação da %LOC duplicada por release** <br> - **Variação do CBO médio por release** |
+| O5 | Q5.1 – Cenários onde duplicação controlada é vantajosa | - **Casos de estudo analisados** (duplicação mantida vs. abstração introduzida) <br> - **%Defeitos relacionados a clones vs. abstrações** |
+| O5 | Q5.2 – Limiares para recomendar refatoração | - **Limiar de ocorrências de clone** (número de repetições a partir do qual se recomenda abstrair) <br> - **Limiar de %LOC duplicada por módulo** (acima do qual o módulo é candidato à refatoração) |
+| O5 | Q5.3 – Diretrizes práticas para decisão | - **Guidelines derivadas do estudo** (regras de decisão documentadas) <br> - **% PRs históricos que se encaixariam nas guidelines (estimado)** |
+
+
+
 ### 4. Escopo e contexto do experimento  
 
 #### 4.1 Escopo funcional / de processo (incluído e excluído)  
@@ -238,3 +260,205 @@ O experimento deverá ser adiado ou cancelado antes do início efetivo da coleta
 - **Mudanças substanciais no escopo ou nos objetivos do estudo** que tornem o desenho atual inadequado, exigindo uma reformulação completa.  
 
 Adicionalmente, se testes preliminares indicarem que as ferramentas escolhidas não conseguem processar de forma confiável os projetos-alvo (por exemplo, falhas sistemáticas, resultados incoerentes), isso configura um motivo forte para interromper ou redesenhar o experimento antes de investir esforço significativo. Esses critérios de parada antecipada existem para evitar o prosseguimento de um estudo que, dadas as condições, não terá condições de produzir resultados com a qualidade científica e a utilidade prática desejadas.
+
+### 7. Modelo conceitual e hipóteses
+#### 7.1 Modelo conceitual do experimento
+
+### 7.2 Hipóteses formais (H0, H1)
+
+A seguir estão as hipóteses nulas e alternativas resumidas para as **questões principais** do experimento, agrupadas por objetivo.
+
+- **O2 – Estrutura x manutenibilidade**
+
+  - **H0\_O2 (nula)**  
+    Não existe relação estatisticamente significativa entre os níveis de duplicação de código / uso de abstrações e os indicadores de manutenibilidade (por exemplo, CBO, WMC, complexidade ciclomática, MI).
+
+  - **H1\_O2 (alternativa, direção esperada)**  
+    Maior duplicação de código está associada a:
+    - maior acoplamento (CBO) e maior complexidade (WMC, complexidade ciclomática); e  
+    - menor índice de manutenibilidade (MI);  
+    enquanto o uso de abstrações bem definidas está associado a menor complexidade média e maior MI.
+
+---
+
+- **O3 – Estrutura x histórico de mudanças**
+
+  - **H0\_O3 (nula)**  
+    Clones de código e abstrações centrais **não** apresentam comportamento de mudança (frequência de commits, tamanho de change sets, hotspots) significativamente diferente do restante do código.
+
+  - **H1\_O3 (alternativa, direção esperada)**  
+    - Regiões com código duplicado aparecem com **maior frequência** em commits de correção/evolução e em **hotspots de manutenção** (maior taxa de mudanças por LOC) do que regiões não clonadas; e  
+    - Commits que alteram abstrações centrais tendem a ter **change sets maiores** (mais arquivos modificados), indicando maior propagação de impacto.
+
+---
+
+- **O4 – Estrutura x longevidade / estabilidade**
+
+  - **H0\_O4 (nula)**  
+    Perfis estruturais com menor duplicação e/ou abstrações mais consolidadas **não estão associados** a maior longevidade dos projetos, maior continuidade de commits nem maior estabilidade de módulos centrais.
+
+  - **H1\_O4 (alternativa, direção esperada)**  
+    - Projetos com **menor %LOC duplicada** e abstrações mais consolidadas tendem a apresentar **maior longevidade** (permanecem ativos por mais tempo) e **evolução mais contínua** (taxa de commits mais estável); e  
+    - Módulos centrais com boas abstrações sofrem **menos reescritas completas / grandes refatorações** e possuem **CBO médio menor** do que módulos centrais com alto nível de duplicação.
+
+---
+
+- **O1 e O5 – Natureza descritiva/exploratória**
+
+  Para **O1** (caracterizar cenário atual) e **O5** (derivar recomendações), a análise será predominantemente **descritiva e exploratória**, usando estatística descritiva e estudos de caso para identificar perfis, padrões e possíveis limiares práticos. Não são definidas hipóteses globais H0/H1 únicas para esses objetivos; em vez disso, resultados quantitativos e qualitativos serão combinados para formular guidelines.
+
+---
+
+### 7.3 Nível de significância e considerações de poder
+
+- **Nível de significância adotado:**  
+  \[
+  \alpha = 0{,}05
+  \]
+
+Serão usados, em geral, **testes bicaudais**, por serem mais conservadores, ainda que as hipóteses alternativas tenham uma **direção teórica esperada** (por exemplo, “mais duplicação → pior manutenibilidade”). Sempre que possível, serão reportados também:
+
+- **Tamanho de efeito** (por exemplo, d de Cohen, coeficientes de correlação);  
+- **Intervalos de confiança**, para explicitar a incerteza das estimativas.
+
+Do ponto de vista de poder estatístico:
+
+- A análise em nível de **módulo/arquivo** (muitas observações por projeto) deve fornecer **poder moderado a alto** para detectar **efeitos de tamanho médio** nas relações duplicação/abstração x métricas estruturais (CBO, WMC, MI).  
+- A análise em nível de **projeto** (menos unidades) terá poder menor para efeitos sutis, exigindo interpretação mais cautelosa.
+
+Para mitigar limitações de poder, o estudo irá:
+1. Combinar diferentes granularidades (módulo, arquivo, projeto).  
+2. Complementar os testes com **estudos de caso qualitativos** (projetos/módulos extremos).  
+3. Dar ênfase em **tamanhos de efeito** e relevância prática, não apenas em significância estatística.
+
+Em síntese, com um conjunto de projetos OSS de médio/grande porte e múltiplos módulos por projeto, espera-se poder estatístico suficiente para detectar efeitos moderados nas principais relações investigadas.
+
+
+
+
+## 8. Variáveis, fatores, tratamentos e objetos de estudo
+
+### 8.1 Objetos de estudo
+
+- **Projetos OSS OO:** repositórios completos em GitHub/GitLab.  
+- **Módulos/arquivos de produção:** classes, pacotes, serviços, adaptadores, utilitários.  
+- **Regiões específicas de código:** grupos de clones e arquivos com abstrações centrais.  
+- **Snapshots históricos:** releases ou versões em pontos relevantes da linha do tempo.
+
+### 8.2 Sujeitos / participantes
+
+- **Pesquisadores / engenheiros de software:** responsáveis por seleção de projetos, execução de ferramentas e análise de resultados.  
+- **Desenvolvedores OSS:** participantes indiretos; suas decisões de design são observadas através do código e histórico de commits.
+
+### 8.3 Variáveis independentes (fatores) e níveis
+
+- **Duplicação de código (Dup):** %LOC duplicada, nº de grupos de clones.  
+  - Níveis: **Baixo / Médio / Alto** (definidos por faixas).  
+
+- **Reutilização por abstrações (Abs):** nº de classes abstratas, interfaces, módulos utilitários, centralidade.  
+  - Níveis: **Baixo / Médio / Alto**.  
+
+- **Papel estrutural do módulo (Role):**  
+  - Níveis: **Central / Periférico**.  
+
+- **Perfil de projeto (ProjectProfile):**  
+  - Tamanho: pequeno / médio / grande.  
+  - Maturidade: baixa / média / alta.  
+  - Domínio: biblioteca/framework / aplicação / ferramenta de infra.
+
+### 8.4 Tratamentos (condições experimentais)
+
+Perfis estruturais observados (não há intervenção experimental clássica):
+
+- **T1 – Alta abstração, baixa duplicação (Abs↑, Dup↓)**  
+- **T2 – Baixa abstração, baixa duplicação (Abs↓, Dup↓)**  
+- **T3 – Alta duplicação, baixa abstração (Abs↓, Dup↑)**  
+- **T4 – Alta duplicação, alta abstração (Abs↑, Dup↑)**  
+
+Comparações binárias adicionais: **HighDup vs. LowDup**, **HighAbs vs. LowAbs**, **Central vs. Periférico**.
+
+### 8.5 Variáveis dependentes (respostas)
+
+- **Estruturais:** CBO médio, WMC médio, complexidade ciclomática, MI.  
+- **Histórico de mudanças:** %commits tocando clones, commits/clone, tamanho do change set em commits que alteram abstrações, taxa de mudança em regiões clonadas vs. não clonadas.  
+- **Longevidade:** tempo de atividade do projeto, taxa média de commits por ano, nº de grandes refatorações/reescritas em módulos centrais.  
+- **Qualidade / recomendações:** distribuição (quando possível) de defeitos em clones vs. abstrações; evidências de casos de estudo.
+
+### 8.6 Variáveis de controle / bloqueio
+
+- **Linguagem predominante:** estratificação por Java, C#, C++ etc.  
+- **Tamanho do projeto:** faixas de LOC/nº de arquivos.  
+- **Maturidade:** idade, nº de releases, popularidade.  
+- **Tipo de projeto:** biblioteca, framework, aplicação de negócio, ferramenta.  
+- **Granularidade de análise:** foco consistente em código de produção (excluindo testes, código gerado, scripts).
+
+Essas variáveis podem ser usadas como blocos ou covariáveis em análises estatísticas.
+
+### 8.7 Possíveis variáveis de confusão
+
+- Estilo de desenvolvimento e cultura de revisão/refatoração da equipe.  
+- Qualidade e cobertura de testes automatizados.  
+- Uso intenso de frameworks e código gerado, que pode inflar métricas de acoplamento.  
+- Mudanças de equipe / governança ao longo do tempo.  
+- Diferenças na forma de registrar issues e bugs.  
+- Histórico prévio de grandes refatorações (podem “resetar” o perfil estrutural).
+
+Esses fatores serão monitorados, sempre que possível, por inspeção qualitativa de documentação, issues e histórico, e levados em conta na interpretação dos resultados.
+
+### 9. Desenho experimental  
+
+#### 9.1 Tipo de desenho  
+
+O estudo é **observacional, retrospectivo e quase-experimental**, baseado em dados históricos de projetos OSS.  
+O desenho é essencialmente **fatorial 2×2 entre grupos**, com dois fatores principais:
+
+- Nível de **duplicação de código** (baixo vs. alto)  
+- Nível de **abstração/reutilização** (baixo vs. alto)  
+
+Há ainda **bloqueio por contexto** (tamanho, domínio, maturidade) para reduzir viés entre projetos. Esse desenho é adequado porque permite observar o efeito conjunto de duplicação e abstração em dados reais, sem intervir nos projetos.
+
+---
+
+#### 9.2 Randomização e alocação  
+
+Não há randomização clássica de tratamento, mas sim:
+
+- **Seleção aleatória de projetos OSS** dentro de um conjunto elegível (critérios mínimos de linguagem OO, tamanho, histórico).  
+- **Classificação automática** de projetos/módulos em faixas de duplicação e abstração, seguida de **amostragem aleatória estratificada** para compor grupos comparáveis.  
+- **Ordem de processamento/inspeção** (para estudos de caso) também randomizada para reduzir viés do pesquisador.
+
+---
+
+#### 9.3 Balanceamento e contrabalanço  
+
+**Balanceamento**
+
+- Uso de **estratificação** por tamanho, domínio e maturidade de projeto ao formar grupos (alta vs. baixa duplicação / abstração).  
+- Limite de módulos por projeto nos grupos, com **amostragem aleatória** interna, evitando que um único projeto domine os resultados.  
+
+**Contrabalanço**
+
+- Nas análises qualitativas, a **ordem de inspeção** dos casos (alta/baixa duplicação/abstração) será alternada/sorteada.  
+- Se houver mais de um avaliador, casos de diferentes grupos serão distribuídos **cruzadamente** para reduzir viés individual.
+
+---
+
+#### 9.4 Número de grupos e sessões  
+
+**Grupos (fatorial 2×2)**
+
+- **G1 – Alta duplicação / Baixa abstração**  
+- **G2 – Baixa duplicação / Alta abstração**  
+- **G3 – Alta duplicação / Alta abstração**  
+- **G4 – Baixa duplicação / Baixa abstração**  
+
+Esses quatro perfis permitem avaliar efeitos principais (duplicação, abstração) e possíveis interações entre eles.
+
+**Sessões / etapas de análise**
+
+Todos os grupos passam pelas mesmas etapas:
+
+1. **Coleta e preparação** – clonagem de repositórios, seleção de snapshots e arquivos de produção.  
+2. **Métricas estruturais** – cálculo de `%LOC duplicada`, CBO, WMC, MI, etc.  
+3. **Análise histórica** – extração de histórico de commits, hotspots, taxa de mudanças, longevidade e grandes refatorações.  
+4. **Análises estatísticas e estudos de caso** – comparação entre G1–G4 e análise qualitativa de exemplos representativos para embasar recomendações práticas.
