@@ -263,6 +263,7 @@ Adicionalmente, se testes preliminares indicarem que as ferramentas escolhidas n
 
 ### 7. Modelo conceitual e hipóteses
 #### 7.1 Modelo conceitual do experimento
+![Modelo Conceitual](assets/modelo-conceitual.png)
 
 ### 7.2 Hipóteses formais (H0, H1)
 
