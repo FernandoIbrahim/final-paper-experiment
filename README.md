@@ -463,3 +463,313 @@ Todos os grupos passam pelas mesmas etapas:
 2. **Métricas estruturais** – cálculo de `%LOC duplicada`, CBO, WMC, MI, etc.  
 3. **Análise histórica** – extração de histórico de commits, hotspots, taxa de mudanças, longevidade e grandes refatorações.  
 4. **Análises estatísticas e estudos de caso** – comparação entre G1–G4 e análise qualitativa de exemplos representativos para embasar recomendações práticas.
+
+## 10. População, sujeitos e amostragem
+
+### 10.1 População-alvo
+A população-alvo do experimento é composta por **projetos de software orientado a objetos de código aberto (OSS)** hospedados em **GitHub/GitLab**, incluindo seus **módulos/arquivos de código de produção** e o **histórico de mudanças** (commits, tags/releases). Indiretamente, o estudo representa **práticas de design e evolução** adotadas por **desenvolvedores e mantenedores OSS** em projetos OO de médio e grande porte.
+
+### 10.2 Critérios de inclusão de sujeitos
+Como o estudo é **observacional**, não há “participantes humanos” como unidades de análise primária; os “sujeitos indiretos” são os **projetos OSS** e, para execução do estudo, os **pesquisadores/avaliadores**. Assim, adotam-se critérios de inclusão em dois níveis:
+
+**(A) Critérios de inclusão para projetos/objetos de estudo (OSS):**
+- Projeto **orientado a objetos** (ex.: Java, C#, C++, etc.) com estrutura de classes/interfaces.
+- Repositório **público e acessível**, com histórico de commits íntegro.
+- **Tamanho mínimo** para permitir análise (ex.: quantidade mínima de LOC/arquivos de produção) e evitar projetos triviais.
+- Presença de **histórico de evolução** (ex.: atividade ao longo do tempo, releases/tags ou volume de commits suficiente).
+- Código de produção identificável (separação razoável de `src/`, módulos, pacotes), permitindo exclusão de testes e código gerado.
+
+**(B) Critérios de inclusão para pesquisadores/avaliadores (executores da análise):**
+- Conhecimento básico de **engenharia de software OO** (classes, interfaces, herança, coesão, acoplamento).
+- Familiaridade com **Git** e leitura de histórico de commits.
+- Disponibilidade para executar ferramentas, validar resultados e registrar decisões metodológicas.
+
+### 10.3 Critérios de exclusão de sujeitos
+**(A) Exclusão de projetos/objetos de estudo (OSS):**
+- Projetos predominantemente **não-OO** (ou com pouca estrutura OO para métricas/abstrações).
+- Repositórios com **histórico incompleto**, inconsistências graves (ex.: reescritas que apagam histórico, commits “squash” massivos sem rastreabilidade mínima) ou inacessíveis.
+- Projetos com grande proporção de **código gerado** ou dependente de build específico que inviabilize extração confiável de métricas.
+- Projetos sem **atividade mínima** (ex.: muito poucos commits) que impedem análise de longevidade/hotspots.
+- Projetos com licenças/restrições que impeçam mineração/uso acadêmico (quando aplicável).
+
+**(B) Exclusão de pesquisadores/avaliadores (quando houver mais de um):**
+- Conflito de interesse relevante (ex.: ser mantenedor principal de um projeto analisado e influenciar a interpretação).
+- Falta de conhecimentos essenciais listados em 10.2(B), que gere vieses por má execução das ferramentas ou interpretação.
+
+### 10.4 Tamanho da amostra planejado (por grupo)
+O estudo utiliza um desenho fatorial **2×2** com quatro perfis (G1–G4), onde a unidade de comparação pode ser **projeto** e/ou **módulo/arquivo** (dependendo da análise). Plano de amostra sugerido:
+
+- **Nível de projeto:** **24 projetos OSS** no total, com balanceamento por contexto (tamanho/domínio/maturidade) e distribuição aproximada:  
+  - **G1 (Alta Dup / Baixa Abs): 6 projetos**  
+  - **G2 (Baixa Dup / Alta Abs): 6 projetos**  
+  - **G3 (Alta Dup / Alta Abs): 6 projetos**  
+  - **G4 (Baixa Dup / Baixa Abs): 6 projetos**
+
+- **Nível de módulo/arquivo (para aumentar poder):** amostragem estratificada de **até 50 módulos/arquivos de produção por projeto** (quando aplicável), evitando que um único projeto domine as análises.  
+
+**Racional:** o nível de módulo/arquivo fornece muitas observações (maior poder para detectar efeitos moderados), enquanto o nível de projeto permite avaliar longevidade e perfis estruturais globais. O tamanho final pode ser ajustado conforme limitações de processamento e tempo.
+
+### 10.5 Método de seleção / recrutamento
+Como não há recrutamento de participantes humanos, a seleção segue:
+
+- **Seleção de projetos OSS:**  
+  1. Definição de um conjunto elegível (linguagens OO, acessibilidade, histórico).  
+  2. **Amostragem aleatória estratificada** por tamanho, domínio e maturidade.  
+  3. Classificação automática por faixas de **duplicação (Dup)** e **abstração (Abs)** para alocar nos grupos G1–G4.  
+  4. Revisão manual leve para confirmar que o projeto atende critérios e que métricas são extraíveis.
+
+- **Pesquisadores/avaliadores (se houver mais de um):**  
+  Seleção por **conveniência** (turma/colaboradores) com checagem de pré-requisitos, e distribuição dos casos para reduzir viés individual (contrabalanço).
+
+### 10.6 Treinamento e preparação dos sujeitos
+Para reduzir vieses e padronizar execução/interpretação:
+
+- **Protocolo de execução** (checklist): passos para clonar repositórios, selecionar snapshots, excluir testes/código gerado, rodar ferramentas e registrar outputs.
+- **Guia de métricas e definições:** CK Metrics (CBO, WMC), MI, critérios de “abstração central”, definição operacional de clones e %LOC duplicada.
+- **Execução piloto (dry-run):** rodar o pipeline completo em 1–2 projetos piloto para calibrar limites, parâmetros e formato de coleta.
+- **Padronização de registros:** templates para anotar decisões (ex.: exclusões, falhas de ferramenta, parâmetros), garantindo reprodutibilidade.
+- **Concordância entre avaliadores (se aplicável):** revisão cruzada de um subconjunto de resultados e alinhamento de interpretação antes da análise final.
+
+## 11. Instrumentação e protocolo operacional
+
+### 11.1 Instrumentos de coleta (questionários, logs, planilhas, etc.)
+A coleta é baseada em **mineração de repositórios** e **análise estática**. Assim, os instrumentos do experimento são principalmente scripts, ferramentas e artefatos de dados.
+
+**Instrumentos principais**
+- **Script de seleção e inventário de repositórios (CLI)**  
+  Coleta metadados iniciais (URL, linguagem predominante, tamanho aproximado, datas de atividade, presença de tags/releases) e registra a lista de projetos elegíveis.
+
+- **Ferramenta de detecção de clones: PMD CPD**  
+  Mede duplicação gerando, no mínimo, **%LOC duplicada**, quantidade de **grupos de clones** e, quando suportado, o mapeamento de clones por arquivo/região.
+
+- **Extrator de métricas OO: CK (CK Metrics Tool)**  
+  Extrai métricas estruturais orientadas a objetos por classe/arquivo (ex.: **CBO**, **WMC** e outras CK metrics), permitindo agregação por módulo e por projeto.
+
+- **Complexidade ciclomática (complementar): Lizard**  
+  Extrai complexidade ciclomática por função/método e métricas simples por arquivo (útil como complemento e para padronizar comparação quando necessário).
+
+- **Cálculo do Índice de Manutenibilidade (MI): script próprio (Python/R)**  
+  Script responsável por calcular o **MI** em uma granularidade definida (arquivo/módulo), garantindo uma fórmula padronizada e reprodutível.
+
+- **Mineração do Git (histórico de mudanças): PyDriller**  
+  Extrai e computa indicadores como frequência de commits, arquivos alterados por commit, tamanho de change sets, co-changes, hotspots e medidas de longevidade (primeiro/último commit).
+
+**Armazenamento e organização dos dados**
+- **Arquivos `.csv`**: base tabular para análises estatísticas (por projeto / arquivo / classe / snapshot).  
+- **Arquivos `.json`**: armazenamento hierárquico de metadados, parâmetros, mapeamentos (ex.: clones por arquivo) e registros auxiliares.  
+Esses formatos serão usados como “data lake” do estudo, permitindo rastreabilidade e integração direta com scripts de análise.
+
+**Suporte à reprodutibilidade**
+- **Repositório do experimento (Git)**  
+  Centraliza pipeline, configurações, versões, templates e resultados, permitindo auditoria e replicação.
+- **Logs de execução e relatórios automatizados**  
+  Guardam parâmetros, versões, stdout/stderr, e indicadores de execução (tempo, falhas, avisos), para rastreabilidade.
+
+> Observação: não serão aplicados questionários/entrevistas com desenvolvedores OSS, pois não há intervenção direta nas comunidades; a análise é baseada em artefatos públicos.
+
+---
+
+### 11.2 Materiais de suporte (instruções, guias)
+Para padronizar execução e reduzir vieses, serão disponibilizados materiais de apoio:
+
+- **Guia de replicação (README do experimento)**  
+  Pré-requisitos, instalação, estrutura de diretórios, comandos do pipeline e exemplo completo de execução.
+
+- **Runbook / Checklist operacional**  
+  Roteiro curto de verificação: seleção de projeto, exclusões, execução das ferramentas, validações, exportação e versionamento dos dados.
+
+- **Guia de definições operacionais**  
+  Define os conceitos usados de forma operacional (ex.: “código de produção”, “abstração central”, “clone”, “hotspot”, “módulo central/periférico”) e como cada métrica será agregada.
+
+- **Templates de registro (Markdown/CSV/JSON)**  
+  Modelos para registrar decisões metodológicas: exclusões aplicadas, ajustes de parâmetros, falhas, tratamentos de dados e justificativas.
+
+- **Documento de parâmetros e versões (bill of materials)**  
+  Lista versões das ferramentas, parâmetros relevantes (CK/CPD/Lizard/PyDriller), fórmula do MI e regras de normalização/estratificação adotadas.
+
+---
+
+### 11.3 Procedimento experimental (protocolo – visão passo a passo)
+A operação do experimento seguirá a sequência abaixo (permitindo que outra pessoa replique o estudo):
+
+1. **Preparar o ambiente**
+   - Instalar dependências e ferramentas (**CK**, **PMD CPD**, **Lizard**, **PyDriller**).
+   - Registrar versões e parâmetros iniciais no documento de “parâmetros e versões”.
+
+2. **Construir o universo elegível de projetos**
+   - Aplicar filtros mínimos (OO, repositório público, histórico mínimo, tamanho mínimo).
+   - Gerar lista candidata com metadados.
+
+3. **Formar a amostra e os grupos (G1–G4)**
+   - Obter métricas preliminares (ou proxies) para classificar **Dup** e **Abs**.
+   - Aplicar amostragem aleatória estratificada (tamanho/domínio/maturidade).
+   - Alocar projetos nos grupos e congelar a lista (IDs e URLs).
+
+4. **Coletar código e selecionar snapshots**
+   - Clonar repositórios e fixar referências (commit hash, tags/releases selecionadas).
+   - Identificar “código de produção” e aplicar exclusões (testes, código gerado, config).
+
+5. **Extrair métricas estruturais**
+   - Executar **CK** para métricas OO (CBO, WMC, etc.).
+   - Executar **Lizard** para complexidade ciclomática (quando aplicável).
+   - Calcular MI com o **script próprio (Python/R)**.
+   - Exportar resultados em `.csv`/`.json` com chaves consistentes.
+
+6. **Detectar clones e medir duplicação**
+   - Executar **PMD CPD** com parâmetros padronizados.
+   - Coletar %LOC duplicada, grupos de clones e mapeamentos por arquivo/região.
+   - Persistir outputs em `.csv` e `.json`.
+
+7. **Minerar histórico de mudanças**
+   - Executar **PyDriller** para extrair commits e change sets.
+   - Calcular hotspots, co-changes, taxa de commits e indicadores ligados a clones/abstrações.
+   - Persistir outputs em `.csv`/`.json`.
+
+8. **Integrar e validar dados**
+   - Unificar tabelas por chaves (projeto/arquivo/classe/snapshot).
+   - Rodar checagens: ausências, duplicidades, outliers grosseiros, consistência de chaves.
+   - Registrar correções e decisões no log metodológico.
+
+9. **Analisar resultados (quantitativo + qualitativo)**
+   - Estatística descritiva por grupo (G1–G4).
+   - Testes e correlações para O2–O4 (incluindo tamanho de efeito e IC).
+   - Selecionar casos extremos para estudos de caso e registrar evidências.
+
+10. **Sintetizar e produzir recomendações**
+   - Consolidar achados em tabelas/gráficos.
+   - Derivar guidelines (O5) e, quando suportado, limiares práticos.
+
+11. **Encerrar e empacotar a replicação**
+   - Congelar dataset final em `.csv`/`.json`.
+   - Taguear versão do repositório do experimento e publicar o pacote de replicação.
+
+---
+
+### 11.4 Plano de piloto (se haverá piloto, escopo e critérios de ajuste)
+Será realizado um **piloto** para validar o pipeline antes da coleta definitiva.
+
+**Escopo**
+- Executar o pipeline completo em **2 projetos OSS** (um médio e um grande), em linguagem OO suportada.
+
+**Objetivos**
+- Verificar se as ferramentas (**CK**, **PMD CPD**, **Lizard**, **PyDriller**) processam os projetos sem falhas recorrentes.
+- Calibrar parâmetros de clones (CPD) e regras de exclusão (testes/código gerado).
+- Validar formatos de saída e chaves de integração (classe/arquivo/projeto/snapshot).
+- Estimar tempo de execução e custo computacional.
+
+**Ajustes permitidos após o piloto**
+- Ajustar parâmetros das ferramentas (ex.: thresholds do **CPD**, filtros de arquivo no **Lizard**, configurações do **CK**).
+- Refinar regras operacionais (definição de produção, normalizações por LOC).
+- Ajustar tamanho amostral (nº de projetos ou nº de módulos por projeto) conforme limites de escala.
+- Melhorar templates de registro, logs e validações automáticas.
+
+**Critério de go/no-go**
+- **Go**: pelo menos **80%** do pipeline executa sem falhas críticas nos projetos piloto e as métricas essenciais (Dup via **CPD**, CBO/WMC via **CK**, histórico via **PyDriller**) são extraídas com coerência.
+- **No-go / redesenho**: falhas sistemáticas, resultados incoerentes ou impossibilidade de extrair métricas essenciais.
+
+## 12. Plano de análise de dados (pré-execução)
+
+### 12.1 Estratégia geral de análise (como responderá às questões)
+A análise usará **datasources granulares por RQ** (arquivos `.json` específicos, derivados do pipeline de mineração e métricas: **CK** para métricas OO, **PMD CPD** para clones, **Lizard** para complexidade ciclomática e **PyDriller** para histórico). Cada datasource conterá observações em granularidades consistentes (**projeto / snapshot / arquivo / classe**), permitindo responder às perguntas por meio de comparações entre **grupos fatorias G1–G4** (Alta/Baixa Duplicação × Alta/Baixa Abstração) e análises correlacionais/explicativas com controles.
+
+Mapeamento de como cada objetivo/pergunta será respondido:
+
+- **O1 (Q1.1–Q1.3) – Caracterizar cenário atual**
+  - **Q1.1 (nível de duplicação):** usar `rq_q11_clones.json` para estimar **%LOC duplicada**, **nº de grupos de clones** e concentração por arquivo/módulo, descrevendo distribuições por projeto e por strata (tamanho/domínio/maturidade).
+  - **Q1.2 (mecanismos de abstração):** usar `rq_q12_abstractions.json` para **#interfaces, #classes abstratas, Abs/LOC** e proxies de centralidade de abstrações.
+  - **Q1.3 (variação entre projetos):** usar `rq_q13_profile_variation.json` para comparar perfis (Dup/Abs) entre **categorias** (tamanho/domínio/maturidade), com estatística descritiva e testes de diferenças.
+
+- **O2 (Q2.1–Q2.3) – Estrutura × manutenibilidade**
+  - **Q2.1 (duplicação vs acoplamento):** usar `rq_q21_dup_vs_coupling.json` (Dup ↔ **CBO do CK**) para comparar **HighDup vs LowDup** e **G1–G4**, controlando por tamanho/linguagem.
+  - **Q2.2 (abstração vs complexidade):** usar `rq_q22_abs_vs_complexity.json` (Abs ↔ **WMC (CK)** e **CC (Lizard)**) para avaliar associação e diferenças entre grupos.
+  - **Q2.3 (combinações e MI):** usar `rq_q23_structure_vs_mi.json` (Dup/Abs/CBO/WMC/CC ↔ **MI** calculado via script) para modelar o efeito conjunto dos fatores e identificar combinações mais associadas a maior MI.
+
+- **O3 (Q3.1–Q3.3) – Estrutura × histórico de mudanças**
+  - **Q3.1 (mudanças em clones):** usar `rq_q31_commits_touching_clones.json` (PyDriller + mapeamento CPD) para medir **%commits tocando clones** e **commits por grupo de clone**.
+  - **Q3.2 (impacto de abstrações centrais):** usar `rq_q32_changeset_abstractions.json` para comparar **tamanho de change sets** (arquivos por commit) quando commits tocam abstrações centrais.
+  - **Q3.3 (clones e hotspots):** usar `rq_q33_hotspots_clones.json` para contrastar **hotspots/churn** em regiões clonadas vs não clonadas e estimar risco de manutenção.
+
+- **O4 (Q4.1–Q4.3) – Estrutura × longevidade / evolução**
+  - **Q4.1 (longevidade e continuidade):** usar `rq_q41_longevity.json` para comparar **tempo ativo** e **commits/ano** entre perfis estruturais (G1–G4).
+  - **Q4.2 (estabilidade de módulos centrais):** usar `rq_q42_core_stability.json` para observar sinais de **grandes refatorações/reescritas** e mudanças estruturais em módulos centrais.
+  - **Q4.3 (evolução ao longo do tempo):** usar `rq_q43_evolution_over_time.json` para séries por snapshot/release (ex.: **Dup% e CBO por release**) e avaliar tendências.
+
+- **O5 (Q5.1–Q5.3) – Recomendações**
+  - Combinar evidências quantitativas dos datasources anteriores com **casos extremos** (`rq_q51_cases.json`) para extrair padrões práticos.
+  - Estimar **limiares** (ex.: Dup% e repetição de clones) a partir de `rq_q52_thresholds.json`.
+  - Consolidar guidelines e exemplos em `rq_q53_guidelines.json`, explicitando contexto e exceções.
+
+---
+
+### 12.2 Métodos estatísticos planejados
+Serão aplicadas técnicas alinhadas a cada tipo de variável e granularidade (arquivo/classe/projeto), priorizando **tamanhos de efeito** e **intervalos de confiança** além de *p-values*:
+
+- **Estatística descritiva:** média/mediana, IQR, desvio padrão, distribuição e medidas de concentração (ex.: Pareto de clones).
+- **Testes de normalidade (apoio):** Shapiro–Wilk (quando aplicável) e inspeções gráficas.
+- **Comparação entre dois grupos:**
+  - **t-teste** (se pressupostos aceitáveis) ou **Mann–Whitney U** (não paramétrico) para High/Low (ex.: HighDup vs LowDup).
+- **Comparação entre múltiplos grupos (G1–G4):**
+  - **ANOVA** (com checagens de homocedasticidade) ou **Kruskal–Wallis** (não paramétrico).
+  - Pós-testes quando necessário (ex.: Tukey para ANOVA; Dunn para Kruskal–Wallis).
+- **Associação/correlação:**
+  - **Spearman** (padrão) e **Pearson** (quando apropriado) para relações como Dup% ↔ CBO/WMC/MI.
+- **Modelagem explicativa (efeito conjunto):**
+  - **Regressão linear/robusta** (MI como resposta; Dup/Abs/CBO/WMC/CC como preditores).
+  - Inclusão de **covariáveis/controles**: LOC/tamanho, linguagem, maturidade, domínio.
+  - Quando houver estrutura hierárquica clara (arquivos dentro de projetos), considerar **modelos mistos** (efeitos aleatórios por projeto) para reduzir pseudorrepetição.
+- **Tendência temporal (snapshots):**
+  - Regressão por tempo/snapshot e medidas de tendência; quando necessário, abordagens robustas a outliers.
+- **Tamanho de efeito e incerteza:**
+  - **d de Cohen / Cliff’s delta** (dependendo do teste), **η²/ε²** (ANOVA/Kruskal), e **IC 95%** por bootstrap quando útil.
+- **Correção para múltiplas comparações:** controle por **FDR (Benjamini–Hochberg)** quando houver muitas hipóteses simultâneas por RQ.
+
+---
+
+### 12.3 Tratamento de dados faltantes e outliers
+As regras abaixo serão aplicadas **antes** das análises finais para evitar decisões oportunistas:
+
+**Dados faltantes**
+- Classificação do motivo:  
+  (a) falha de ferramenta/parse; (b) arquivo excluído por regra (testes/gerado/config); (c) métrica não aplicável.
+- Regras:
+  - Se uma métrica essencial para uma RQ (ex.: Dup% para Q1.1) estiver ausente em um projeto/snapshot, esse **projeto/snapshot não entra** nas análises daquela RQ (exclusão por análise, não global).
+  - Se faltantes forem **≤ 5%** em uma variável e aparentarem ser aleatórios, usar **exclusão por lista** (complete-case) na análise específica.
+  - Se faltantes forem **> 5%** e concentrados em certos perfis (ex.: apenas projetos grandes), aplicar **análise de sensibilidade**:
+    - comparar resultados com e sem esses casos;
+    - registrar impacto no relatório.
+- Toda ausência relevante será registrada no `index.json` (proveniência) e em log metodológico, com contagem por causa.
+
+**Outliers**
+- Detecção padronizada, por variável e granularidade:
+  - regra de **IQR** (Q1–1.5×IQR; Q3+1.5×IQR) e inspeções gráficas.
+- Regras:
+  - Outliers **não serão removidos por padrão**; a abordagem preferencial é:
+    - usar **estatísticas robustas** (mediana/IQR) e/ou **transformações** (ex.: log em churn/commits quando muito assimétrico),
+    - ou **winsorização** apenas em análises específicas e previamente justificadas.
+  - Remoção só ocorrerá se houver evidência objetiva de erro (ex.: bug de extração, duplicidade, arquivo fora do escopo), sempre registrada.
+- Resultados principais serão acompanhados de **análises robustas** (comparando com/sem tratamento) quando outliers influírem fortemente.
+
+---
+
+### 12.4 Plano de análise para dados qualitativos (se houver)
+Embora o estudo seja primariamente quantitativo, haverá componente qualitativa **leve** e orientada a evidências para sustentar **O5** (recomendações) e explicar casos extremos:
+
+**Fontes qualitativas**
+- Discussões públicas e artefatos do repositório: mensagens de commit, descrições de PR, issues relevantes, notas de release, e diffs associados a refatorações/introdução de abstrações/remoção de clones (quando disponíveis).
+- Casos selecionados em `rq_q51_cases.json` (ex.: módulos com alta Dup + alto churn; abstrações centrais com grande change set).
+
+**Técnica**
+- **Análise temática/codificação direcionada** (dedutiva), baseada em categorias pré-definidas:
+  - “Abstração generalizada / over-engineering”
+  - “Duplicação controlada local”
+  - “Acoplamento propagado por abstração central”
+  - “Refatoração motivada por bug”
+  - “Mudança de API / compatibilidade”
+  - “Hotspot por evolução do domínio”
+- Processo:
+  1. Selecionar casos extremos (critérios quantitativos claros).
+  2. Coletar evidências textuais e trechos de diff (links/IDs).
+  3. Codificar em 1ª rodada; refinar categorias (mantendo rastreabilidade).
+  4. Resumir achados em narrativas curtas por caso, conectando números (Dup/Abs/CBO/WMC/CC/churn) ao racional da mudança.
+- Saída:
+  - Evidências e sínteses serão registradas no datasource qualitativo (`rq_q51_cases.json`) e consolidadas em `rq_q53_guidelines.json` como exemplos e exceções práticas.
