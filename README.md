@@ -669,6 +669,8 @@ Será realizado um **piloto** para validar o pipeline antes da coleta definitiva
 
 ## 12. Plano de análise de dados (pré-execução)
 
+![data-set-diagram](assets/data-set-diagram.png)
+
 ### 12.1 Estratégia geral de análise (como responderá às questões)
 A análise usará **datasources granulares por RQ** (arquivos `.json` específicos, derivados do pipeline de mineração e métricas: **CK** para métricas OO, **PMD CPD** para clones, **Lizard** para complexidade ciclomática e **PyDriller** para histórico). Cada datasource conterá observações em granularidades consistentes (**projeto / snapshot / arquivo / classe**), permitindo responder às perguntas por meio de comparações entre **grupos fatorias G1–G4** (Alta/Baixa Duplicação × Alta/Baixa Abstração) e análises correlacionais/explicativas com controles.
 
