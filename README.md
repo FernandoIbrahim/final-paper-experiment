@@ -775,3 +775,150 @@ Embora o estudo seja primariamente quantitativo, haverá componente qualitativa 
   4. Resumir achados em narrativas curtas por caso, conectando números (Dup/Abs/CBO/WMC/CC/churn) ao racional da mudança.
 - Saída:
   - Evidências e sínteses serão registradas no datasource qualitativo (`rq_q51_cases.json`) e consolidadas em `rq_q53_guidelines.json` como exemplos e exceções práticas.
+
+
+## 13. Avaliação de validade (ameaças e mitigação)
+
+### 13.1 Validade de conclusão
+Ameaças que podem comprometer a robustez das conclusões estatísticas e estratégias de mitigação:
+
+**Ameaças identificadas:**
+
+1. **Baixo poder estatístico (análise em nível de projeto)**
+   - Com apenas ~24 projetos divididos em 4 grupos (G1–G4), o poder para detectar efeitos pequenos ou moderados em comparações entre grupos pode ser limitado.
+   - **Mitigação:** Complementar análises em nível de projeto com análises em nível de **módulo/arquivo** (centenas de observações), aumentando o poder. Priorizar **tamanhos de efeito** e **intervalos de confiança** sobre significância estatística isolada. Usar **análises robustas** (não paramétricas) quando pressupostos não forem atendidos.
+
+2. **Violação de pressupostos estatísticos**
+   - Métricas como CBO, WMC, %LOC duplicada e churn podem apresentar **distribuições assimétricas** ou **heterocedasticidade**, violando pressupostos de testes paramétricos (ANOVA, t-teste, regressão linear).
+   - **Mitigação:** Realizar **testes de normalidade** (Shapiro–Wilk) e inspeções gráficas antes das análises. Usar **testes não paramétricos** (Mann–Whitney U, Kruskal–Wallis) quando necessário. Aplicar **transformações** (log, raiz quadrada) para normalizar distribuições. Empregar **regressão robusta** ou **modelos mistos** quando apropriado.
+
+3. **Erro de medida nas ferramentas**
+   - Ferramentas como **PMD CPD** (detecção de clones), **CK** (métricas OO) e **Lizard** (complexidade) podem produzir **falsos positivos/negativos** ou resultados inconsistentes dependendo da configuração e da linguagem.
+   - **Mitigação:** Executar **piloto** para calibrar parâmetros e validar outputs. Registrar **versões e configurações** de todas as ferramentas. Comparar resultados de ferramentas diferentes quando possível (ex.: Lizard + CK para complexidade). Documentar e excluir casos onde ferramentas falharam sistematicamente.
+
+4. **Múltiplas comparações (inflação de Erro Tipo I)**
+   - Com múltiplas questões de pesquisa (Q1.1–Q5.3) e diversos testes estatísticos, há risco de encontrar associações significativas por acaso.
+   - **Mitigação:** Aplicar **correção FDR (Benjamini–Hochberg)** quando houver muitas hipóteses simultâneas por objetivo. Priorizar questões definidas *a priori* e interpretação conjunta de resultados (não apenas *p-values* isolados).
+
+5. **Pseudorrepetição (arquivos dentro de projetos)**
+   - Arquivos/módulos do mesmo projeto não são independentes, o que pode **inflar artificialmente** a significância estatística em análises que tratam arquivos como unidades independentes.
+   - **Mitigação:** Usar **modelos mistos** (efeitos aleatórios por projeto) quando analisar arquivos/classes. Alternativamente, **agregar** métricas por projeto e conduzir análises em nível de projeto para questões críticas. Reportar resultados em ambas as granularidades quando apropriado.
+
+---
+
+### 13.2 Validade interna
+Ameaças relacionadas a causas alternativas para os efeitos observados e estratégias de controle:
+
+**Ameaças identificadas:**
+
+1. **Seleção (selection bias)**
+   - Projetos OSS podem **não ser representativos** de todo o universo de software OO (ex.: viés para projetos populares, bem mantidos, com comunidades ativas).
+   - **Mitigação:** Aplicar **amostragem aleatória estratificada** por tamanho, domínio e maturidade dentro do conjunto elegível. Documentar critérios de inclusão/exclusão e características da amostra final. Reconhecer explicitamente limitações de generalização em contextos diferentes (ex.: software proprietário).
+
+2. **História (history)**
+   - Eventos externos ao experimento (ex.: mudanças de linguagem, frameworks, práticas de mercado) podem ter ocorrido durante a evolução dos projetos e influenciar métricas de longevidade, churn ou acoplamento, confundindo-se com o efeito de duplicação/abstração.
+   - **Mitigação:** Como o estudo é **retrospectivo/observacional**, não há controle direto sobre história. Estratégia: **estratificar por período** (releases antigas vs. recentes) e **controlar por maturidade** do projeto nas análises. Usar **análises de série temporal** (O4.3) para observar tendências e identificar possíveis pontos de inflexão relacionados a eventos externos.
+
+3. **Maturação (maturation)**
+   - Projetos naturalmente evoluem ao longo do tempo: equipes aprendem, arquitetura se estabiliza, código é refatorado. Mudanças em métricas podem refletir **maturação natural** e não apenas o efeito de duplicação/abstração.
+   - **Mitigação:** **Controlar por idade/maturidade** do projeto nas análises (covariável: tempo desde primeiro commit, número de releases). Comparar **snapshots equivalentes** em termos de maturidade entre projetos de diferentes perfis (G1–G4). Usar análise longitudinal (O4.3) para separar efeitos de maturação de padrões estruturais persistentes.
+
+4. **Instrumentação (mudanças nas ferramentas)**
+   - Se diferentes versões de ferramentas (CK, CPD, Lizard, PyDriller) forem usadas ao longo do estudo ou entre projetos, pode haver **inconsistências** nas métricas.
+   - **Mitigação:** **Congelar versões** de todas as ferramentas no início do estudo e registrar no documento de "parâmetros e versões". Executar todo o pipeline com as **mesmas versões e configurações**. Se atualizações forem necessárias, re-executar a coleta completa ou registrar e controlar esse fator nas análises.
+
+5. **Regressão à média**
+   - Projetos com valores extremos de duplicação ou acoplamento em um snapshot podem naturalmente "regredir" a valores mais médios em snapshots posteriores, não por efeito causal real, mas por flutuação estatística.
+   - **Mitigação:** Usar **múltiplos snapshots** e analisar tendências ao longo do tempo (O4.3), não apenas comparações ponto-a-ponto. Interpretar mudanças extremas com cautela e buscar **evidências contextuais** (commits, PRs) que expliquem refatorações ou mudanças estruturais reais.
+
+---
+
+### 13.3 Validade de constructo
+Reflexão sobre se as medidas escolhidas realmente representam os conceitos de interesse e como reduzir ambiguidades:
+
+**Ameaças identificadas:**
+
+1. **Operacionalização de "duplicação de código"**
+   - **PMD CPD** detecta clones baseados em similaridade textual/sintática, mas pode **não capturar** duplicação semântica (lógica similar com código diferente) ou **superestimar** duplicação legítima (ex.: boilerplate, padrões idiomáticos da linguagem).
+   - **Mitigação:** Usar parâmetros calibrados no **piloto** para minimizar falsos positivos. Complementar com análise qualitativa de casos extremos (O5) para validar se clones detectados são realmente problemáticos. Reconhecer que %LOC duplicada é um **proxy imperfeito** e interpretar resultados com essa ressalva.
+
+2. **Operacionalização de "abstração/reutilização"**
+   - Contar **#interfaces** e **#classes abstratas** não captura a **qualidade** das abstrações (ex.: interfaces bem projetadas vs. interfaces muito genéricas ou com muitos métodos).
+   - **Mitigação:** Complementar com métricas de **centralidade** (arquivos que importam/herdam de abstrações) e **CBO** (acoplamento). Usar análise qualitativa (O5) para inspecionar abstrações centrais e validar se são realmente reutilizáveis ou se introduzem acoplamento excessivo. Reconhecer que a métrica é **quantitativa** e não captura todos os aspectos de design.
+
+3. **Operacionalização de "manutenibilidade"**
+   - O **Índice de Manutenibilidade (MI)** é uma métrica composta que combina complexidade, tamanho e volume de código, mas sua validade como proxy de manutenibilidade **real** (facilidade de compreensão, modificação, teste) é debatida na literatura.
+   - **Mitigação:** Usar MI como **um dos indicadores**, mas não o único. Complementar com **CBO, WMC, complexidade ciclomática** e **métricas históricas** (churn, hotspots) que têm respaldo empírico mais forte. Triangular evidências: se múltiplas métricas apontam na mesma direção, a conclusão é mais robusta.
+
+4. **Operacionalização de "esforço de mudança" (O5)**
+   - Medir **arquivos alterados por commit** e **tamanho de commit** (LOC) como proxies de esforço pode não capturar o **custo cognitivo** real ou o **tempo** gasto pelos desenvolvedores.
+   - **Mitigação:** Reconhecer que são **proxies objetivos** e interpretar resultados em termos de "dispersão" e "tamanho" de mudanças, não necessariamente "dificuldade" subjetiva. Complementar com análise qualitativa (mensagens de commit, PRs) quando padrões extremos forem observados. Considerar que mudanças pequenas e localizadas tendem a ser mais fáceis, mas não sempre (ex.: mudança sutil em lógica crítica).
+
+5. **Confusão entre "abstração" e "complexidade estrutural"**
+   - Abstrações podem **reduzir complexidade local** (em classes cliente) mas **aumentar complexidade global** (hierarquias profundas, indireção). Métricas como WMC e CBO podem não distinguir esses efeitos claramente.
+   - **Mitigação:** Analisar **granularidades diferentes** (classe, módulo, projeto) para capturar efeitos locais e globais. Usar **estudos de caso** (O5) para examinar hierarquias e padrões de acoplamento em contextos específicos. Reportar resultados com nuances, evitando conclusões simplistas tipo "abstrações sempre reduzem complexidade".
+
+---
+
+### 13.4 Validade externa
+Discussão sobre em que contextos os resultados podem ser generalizados e limitações:
+
+**Contextos de generalização esperada:**
+
+- **Projetos OSS orientados a objetos** em linguagens mainstream (Java, C#, C++, Python OO) de médio a grande porte, mantidos colaborativamente em repositórios públicos, com práticas modernas de desenvolvimento (Git, revisão de código, CI).
+- **Equipes distribuídas** trabalhando em projetos com evolução contínua, múltiplos contribuidores e foco em manutenibilidade de longo prazo.
+- **Domínios variados**: bibliotecas, frameworks, aplicações de backend, ferramentas de desenvolvimento.
+
+**Limitações de generalização:**
+
+1. **Software proprietário / corporativo**
+   - Projetos proprietários podem ter **processos diferentes** (ex.: revisões mais rigorosas, documentação interna, pressões de negócio), **equipes dedicadas** (vs. contribuidores voluntários) e **restrições específicas** (regulamentação, performance crítica).
+   - Padrões de duplicação/abstração e suas consequências podem variar. **Generalização limitada** para contextos corporativos.
+
+2. **Projetos pequenos ou pessoais**
+   - Projetos muito pequenos (poucas classes, poucos desenvolvedores) podem ter dinâmicas diferentes: duplicação pode ser aceitável por simplicidade, abstrações podem ser over-engineering.
+   - Resultados do estudo, focado em projetos médios/grandes, podem **não se aplicar** a projetos triviais ou protótipos.
+
+3. **Linguagens não-OO ou paradigmas diferentes**
+   - Linguagens funcionais, procedurais ou paradigmas reativos têm **mecanismos diferentes** de reutilização (ex.: composição de funções, módulos, traits).
+   - Conclusões sobre "duplicação vs. abstração OO" têm **validade externa limitada** para esses contextos.
+
+4. **Projetos com requisitos especiais**
+   - Sistemas embarcados, tempo real, alta performance ou segurança crítica podem ter **trade-offs específicos** onde abstrações (ex.: polimorfismo) são evitadas por custo de runtime ou previsibilidade.
+   - Resultados podem **não generalizar** para esses domínios especializados.
+
+5. **Cultura e práticas de desenvolvimento**
+   - Projetos OSS têm cultura específica (transparência, revisão pública, foco em qualidade técnica). Empresas com culturas diferentes (ex.: foco extremo em velocidade de entrega, dívida técnica aceitável) podem ter padrões distintos.
+   - **Generalização cautelosa** para contextos com culturas organizacionais muito diferentes.
+
+**Estratégias para ampliar validade externa (futuras):**
+- Replicar o estudo em **contextos proprietários** (quando viável).
+- Incluir **linguagens/paradigmas diferentes** em estudos subsequentes.
+- Comparar resultados com **literatura existente** sobre duplicação/abstração em contextos variados.
+
+---
+
+### 13.5 Resumo das principais ameaças e estratégias de mitigação
+
+| **Tipo de Validade** | **Ameaça Principal** | **Estratégia de Mitigação** |
+|----------------------|----------------------|-----------------------------|
+| **Conclusão** | Baixo poder estatístico (nível de projeto) | Complementar com análises em nível de módulo/arquivo; priorizar tamanhos de efeito e IC |
+| **Conclusão** | Violação de pressupostos estatísticos | Usar testes não paramétricos, transformações e regressão robusta quando necessário |
+| **Conclusão** | Erro de medida nas ferramentas | Calibrar parâmetros no piloto; registrar versões; validar outputs |
+| **Interna** | Seleção (projetos OSS não representativos) | Amostragem aleatória estratificada; documentar características da amostra |
+| **Interna** | História (eventos externos) | Estratificar por período; controlar por maturidade; análise temporal |
+| **Interna** | Maturação (evolução natural dos projetos) | Controlar por idade/maturidade; comparar snapshots equivalentes |
+| **Interna** | Instrumentação (mudanças nas ferramentas) | Congelar versões de ferramentas; registrar configurações |
+| **Interna** | Regressão à média | Usar múltiplos snapshots; analisar tendências; buscar evidências contextuais |
+| **Constructo** | Operacionalização de "duplicação" (PMD CPD) | Calibrar parâmetros; validação qualitativa de casos extremos |
+| **Constructo** | Operacionalização de "abstração" (contagem simples) | Complementar com métricas de centralidade e CBO; análise qualitativa |
+| **Constructo** | Operacionalização de "manutenibilidade" (MI) | Usar múltiplas métricas (CBO, WMC, CC, churn); triangular evidências |
+| **Constructo** | Operacionalização de "esforço de mudança" (proxies) | Reconhecer limitações; complementar com análise qualitativa |
+| **Externa** | Generalização para software proprietário | Reconhecer limitação; replicação futura em contextos corporativos |
+| **Externa** | Generalização para projetos pequenos | Reconhecer limitação; escopo focado em médio/grande porte |
+| **Externa** | Generalização para linguagens não-OO | Reconhecer limitação; escopo focado em paradigma OO |
+
+**Ameaças críticas priorizadas:**
+1. **Baixo poder estatístico** (nível de projeto) → análise multi-nível
+2. **Operacionalização de métricas** (duplicação, abstração, manutenibilidade) → triangulação e validação qualitativa
+3. **Generalização limitada** a contextos OSS OO → reconhecer escopo e sugerir replicações
