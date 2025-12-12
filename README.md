@@ -922,3 +922,563 @@ Discussão sobre em que contextos os resultados podem ser generalizados e limita
 1. **Baixo poder estatístico** (nível de projeto) → análise multi-nível
 2. **Operacionalização de métricas** (duplicação, abstração, manutenibilidade) → triangulação e validação qualitativa
 3. **Generalização limitada** a contextos OSS OO → reconhecer escopo e sugerir replicações
+
+
+
+## 14. Ética, privacidade e conformidade
+
+### 14.1 Questões éticas (uso de sujeitos, incentivos, etc.)
+
+**Natureza do estudo e ausência de participação humana direta**
+
+Este experimento é **puramente observacional** e baseado em **mineração de repositórios públicos de código aberto (OSS)**, sem intervenção ou interação direta com desenvolvedores. Os "sujeitos indiretos" são os projetos OSS e seus mantenedores, cujas decisões de design se manifestam no código versionado.
+
+**Questões éticas identificadas:**
+
+1. **Privacidade e atribuição**
+   - Commits, issues e PRs contêm nomes, e-mails e discussões públicas de desenvolvedores.
+   - **Tratamento:** Como os repositórios são públicos e os dados já estão disponíveis sob licenças OSS, não há expectativa legal de privacidade sobre metadados de commit. No entanto, o estudo irá:
+     - **Anonimizar** nomes e e-mails nas publicações (ex.: "Desenvolvedor A", "Projeto X").
+     - **Citar repositórios** apenas quando necessário para reprodutibilidade, sem destacar indivíduos específicos.
+     - **Não atribuir** "culpa" por más práticas; o foco é em padrões estruturais, não em julgamento pessoal.
+
+2. **Risco de exposição / estigmatização de projetos**
+   - Projetos identificados como tendo "alta duplicação" ou "baixa manutenibilidade" podem sofrer danos reputacionais.
+   - **Tratamento:** 
+     - Análises agregadas sempre que possível; casos específicos usados apenas para ilustração técnica.
+     - Contexto explicativo: reconhecer que métricas refletem trade-offs legítimos (ex.: prototipagem rápida, restrições de recursos).
+     - **Foco em aprendizado**, não em crítica destrutiva.
+
+3. **Uso ético de dados públicos**
+   - Embora os dados sejam públicos, desenvolvedores OSS contribuem voluntariamente para projetos, não para análise acadêmica.
+   - **Tratamento:**
+     - Respeitar licenças OSS (ex.: citar projetos quando apropriado).
+     - **Não alterar** repositórios ou criar issues/PRs baseados em resultados sem consentimento dos mantenedores.
+     - Se houver contato futuro com comunidades, será solicitado **consentimento explícito** antes de qualquer intervenção.
+
+4. **Ausência de conflitos de interesse**
+   - Pesquisadores não têm vínculos comerciais ou de manutenção com os projetos analisados.
+   - **Tratamento:** Declarar explicitamente ausência de conflitos em publicações.
+
+**Incentivos**
+
+Não há incentivos financeiros ou de qualquer natureza oferecidos aos desenvolvedores OSS, pois não há participação ativa. A "recompensa" indireta para a comunidade é o avanço do conhecimento científico sobre boas práticas de design OO.
+
+---
+
+### 14.2 Consentimento informado
+
+**Contexto e aplicabilidade**
+
+Como o estudo é baseado em **dados públicos** (repositórios OSS sob licenças abertas como MIT, Apache, GPL), não há requisito legal ou ético de **consentimento informado individual** dos desenvolvedores, segundo diretrizes de pesquisa em mineração de repositórios de software (ex.: ACM SIGSOFT, IEEE).
+
+**Transparência e comunicação**
+
+Embora não seja obrigatório, o estudo adotará práticas de **transparência**:
+
+1. **Publicação do protocolo**
+   - O plano de experimento (este documento) será disponibilizado publicamente no repositório do estudo, permitindo que qualquer desenvolvedor OSS conheça os objetivos e métodos.
+
+2. **Notificação opcional (se aplicável)**
+   - Se o estudo gerar **recomendações específicas** para projetos identificados, os mantenedores serão **notificados via issue** ou e-mail, com:
+     - Descrição clara dos objetivos da pesquisa.
+     - Link para o protocolo e dados coletados.
+     - **Opção de opt-out**: possibilidade de solicitar exclusão do projeto da amostra, sem penalidade.
+     - Explicação de como os dados serão usados e publicados (anonimização padrão).
+
+3. **Registro em publicações**
+   - Artigos e relatórios incluirão uma seção de "Considerações Éticas" explicitando:
+     - Uso de dados públicos.
+     - Medidas de anonimização.
+     - Ausência de intervenção nos projetos.
+     - Respeito a licenças OSS.
+
+**Direitos dos "sujeitos indiretos"**
+
+Embora não haja consentimento formal, desenvolvedores OSS têm o direito de:
+- **Conhecer** os objetivos do estudo (via protocolo público).
+- **Solicitar exclusão** de seus projetos (opt-out tardio), caso identificados e notificados.
+- **Contestar** interpretações ou conclusões que considerem injustas ou imprecisas (via contato público do pesquisador).
+
+---
+
+### 14.3 Privacidade e proteção de dados
+
+**Dados pessoais coletados**
+
+O estudo coletará metadados associados a commits, issues e PRs:
+- **Nomes de desenvolvedores** (author/committer).
+- **E-mails** (hashes ou versões públicas disponíveis no Git).
+- **Timestamps** de atividade.
+- **Mensagens** de commit, descrições de PR e discussões públicas.
+
+**Classificação sob GDPR/LGPD**
+
+- **Repositórios públicos OSS**: dados já são públicos sob licenças abertas; desenvolvedores consentiram implicitamente ao contribuir.
+- **Não há coleta de dados sensíveis** (ex.: origem racial, opiniões políticas, dados de saúde).
+- **Contexto acadêmico**: pesquisa sem fins comerciais, com finalidade de avanço científico.
+
+**Medidas de proteção**
+
+1. **Anonimização nas publicações**
+   - Substituir nomes/e-mails por identificadores pseudônimos (ex.: "Dev001", "Projeto-A").
+   - Manter mapeamento **interno** (necessário para rastreabilidade metodológica) em arquivo criptografado, acessível apenas ao pesquisador principal.
+
+2. **Pseudoanonimização nos datasets intermediários**
+   - Durante análises, usar **hashes** de e-mails ou IDs numéricos em vez de nomes reais.
+   - Scripts de extração (PyDriller, etc.) gerarão `.json` com IDs pseudônimos.
+
+3. **Controle de acesso aos dados brutos**
+   - Repositórios clonados e dados brutos (commits completos com nomes/e-mails) armazenados em **ambiente local seguro** (disco criptografado).
+   - **Não compartilhar publicamente** dados brutos; apenas datasets agregados e anonimizados serão disponibilizados para reprodutibilidade.
+
+4. **Retenção de dados**
+   - **Dados anonimizados/agregados**: mantidos indefinidamente para replicação científica.
+   - **Dados brutos (com nomes/e-mails)**: mantidos por **2 anos** após publicação final, conforme prática acadêmica, e depois **deletados permanentemente**.
+   - Mapeamento pseudônimos ↔ nomes reais: mantido por **2 anos** em arquivo criptografado, depois deletado.
+
+**Minimização de dados**
+
+- Coletar apenas metadados **necessários** para responder às RQs (ex.: autor/timestamp para análise de hotspots).
+- **Não coletar** informações pessoais além das disponíveis no Git (ex.: não buscar redes sociais, perfis LinkedIn).
+
+**Direitos dos titulares (desenvolvedores OSS)**
+
+Embora dados sejam públicos, o estudo respeitará:
+- **Direito ao esquecimento**: desenvolvedores podem solicitar remoção de seus dados do estudo (opt-out tardio).
+- **Direito de retificação**: correções em metadados identificados como incorretos.
+
+---
+
+### 14.4 Aprovações necessárias (comitê de ética, jurídico, DPO, etc.)
+
+**Órgãos de aprovação identificados:**
+
+1. **Comitê de Ética em Pesquisa (CEP) – Status: Dispensado**
+   - **Justificativa:** O estudo **não envolve seres humanos diretamente** (sem entrevistas, questionários, intervenções). Dados são públicos e não sensíveis.
+   - **Conformidade:** Resolução CNS 510/2016 (Brasil) dispensa aprovação ética para pesquisas com bancos de dados públicos sem identificação de participantes.
+   - **Ação:** Submeter **declaração de dispensa** ao CEP institucional (se houver), ou registrar justificativa formal no protocolo.
+
+2. **Data Protection Officer (DPO) / Encarregado de Dados – Status: Consulta planejada**
+   - **Aplicabilidade:** Se a instituição do pesquisador possuir DPO (exigência LGPD/GDPR), consultar sobre conformidade no tratamento de metadados públicos.
+   - **Ação:** Submeter resumo do plano de coleta, anonimização e retenção para **parecer consultivo** do DPO antes do início da coleta.
+   - **Prazo:** Consulta até 2 semanas antes do início da coleta.
+
+3. **Jurídico institucional – Status: Não aplicável (preliminar)**
+   - **Aplicabilidade:** Pode ser necessário se houver dúvidas sobre direitos autorais, licenças OSS ou riscos legais de publicar análises.
+   - **Ação:** Se DPO ou orientador acadêmico indicarem risco, submeter consulta ao jurídico institucional.
+   - **Status atual:** Considerado de baixo risco, mas monitorar.
+
+4. **Gestores / Orientador acadêmico – Status: Aprovação necessária**
+   - **Aplicabilidade:** Aprovação formal do orientador/supervisor antes do início da execução.
+   - **Ação:** Reunião de revisão do plano completo (incluindo seções 14–20).
+   - **Prazo:** Aprovação até 1 semana antes do início da coleta.
+
+**Registro de aprovações:**
+
+| Órgão | Necessidade | Status | Ação | Prazo |
+|-------|-------------|--------|------|-------|
+| **CEP** | Dispensado | — | Declaração formal de dispensa | Antes da coleta |
+| **DPO** | Consultivo | Pendente | Submeter resumo do plano | –2 semanas |
+| **Jurídico** | Condicional | Não aplicável | Consulta se indicado por DPO | Se necessário |
+| **Orientador** | Obrigatório | Pendente | Revisão do plano completo | –1 semana |
+
+**Documentação de conformidade:**
+
+Todas as aprovações, dispensas e pareceres serão armazenados no diretório `/docs/approvals/` do repositório do experimento, com controle de versão e datas.
+
+---
+
+## 15. Recursos, infraestrutura e orçamento
+
+### 15.1 Recursos humanos e papéis
+
+**Equipe principal:**
+
+| Papel | Nome | Responsabilidades | Dedicação |
+|-------|------|-------------------|-----------|
+| **Pesquisador Principal (PI)** | Fernando Ibrahim | Desenho do experimento, supervisão geral, análise de dados, escrita de publicações | 20h/semana |
+| **Analista de Dados** | Fernando Ibrahim | Execução de scripts, extração de métricas, análises estatísticas, validação de resultados | 15h/semana |
+| **Revisor Técnico** | A definir | Revisão de código, validação de ferramentas, checagem de outputs (se disponível) | 5h/semana (opcional) |
+| **Orientador Acadêmico** | A definir | Revisão do desenho, discussão de resultados, aprovação de publicações | 2h/semana |
+
+**Nota:** Este é um estudo de pesquisa individual, com o PI acumulando múltiplos papéis. Caso haja recursos para colaboradores, os papéis serão redistribuídos.
+
+---
+
+### 15.2 Infraestrutura técnica necessária
+
+**Ambientes computacionais:**
+
+1. **Máquina local / workstation**
+   - **Especificação:** CPU multicore (≥8 cores), RAM ≥32GB, SSD ≥500GB.
+   - **Uso:** Execução de ferramentas (CK, PMD CPD, Lizard, PyDriller), processamento de datasets, análises estatísticas.
+
+2. **Armazenamento**
+   - **Disco local criptografado:** Repositórios clonados, dados brutos (≈200GB).
+   - **Cloud storage (opcional):** Backup de datasets finais anonimizados (Google Drive, Dropbox).
+
+3. **Repositório Git (controle de versão)**
+   - **GitHub/GitLab:** Repositório público para pipeline, scripts, documentação e datasets anonimizados.
+   - **Branch structure:** `main` (estável), `dev` (desenvolvimento), `analysis` (notebooks/scripts de análise).
+
+**Ferramentas e versões:**
+
+| Ferramenta | Versão | Finalidade |
+|------------|--------|------------|
+| **CK** | 0.7.1 | Métricas OO (CBO, WMC, etc.) |
+| **PMD CPD** | 7.0.0 | Detecção de clones |
+| **Lizard** | 1.17.10 | Complexidade ciclomática |
+| **PyDriller** | 2.6 | Mineração de commits |
+| **Python** | 3.11+ | Scripts de análise, cálculo de MI |
+| **R** | 4.3+ | Análises estatísticas, gráficos |
+| **Git** | 2.40+ | Controle de versão, clonagem de repos |
+
+**Integrações:**
+
+- **GitHub API:** Para coleta de metadados (estrelas, forks, licenças) se necessário.
+- **CI/CD (opcional):** GitHub Actions para validação automática de pipelines (se escopo permitir).
+
+---
+
+### 15.3 Materiais e insumos
+
+**Físicos:**
+
+- **Nenhum material físico necessário** (experimento puramente digital).
+
+**Digitais:**
+
+1. **Licenças de software**
+   - Todas as ferramentas são **open-source** ou gratuitas (CK, PMD CPD, Lizard, PyDriller, Python, R).
+   - **Custo:** R$ 0,00.
+
+2. **Datasets públicos**
+   - Repositórios OSS clonados via Git (públicos, sem custo).
+   - **Custo:** R$ 0,00.
+
+3. **Templates e formulários**
+   - **Checklist de prontidão** (`.md`).
+   - **Log de execução** (`.json` / `.csv`).
+   - **Protocolo de análise qualitativa** (`.md`).
+   - **Templates de registro de decisões** (`.md`).
+   - **Custo:** R$ 0,00 (desenvolvidos internamente).
+
+4. **Armazenamento cloud (backup)**
+   - Google Drive (conta gratuita, 15GB) ou Dropbox (2GB gratuito).
+   - Se necessário mais, upgrade para 100GB ≈ R$ 10/mês.
+   - **Custo estimado:** R$ 50 (5 meses).
+
+---
+
+### 15.4 Orçamento e custos estimados
+
+**Resumo de custos:**
+
+| Item | Quantidade | Custo unitário | Custo total |
+|------|------------|----------------|-------------|
+| **Horas de pesquisa (PI)** | 200h | Voluntário | R$ 0 |
+| **Horas de análise de dados** | 150h | Voluntário | R$ 0 |
+| **Infraestrutura computacional** | 1 workstation | Já disponível | R$ 0 |
+| **Licenças de software** | — | Open-source | R$ 0 |
+| **Armazenamento cloud (backup)** | 5 meses | R$ 10/mês | R$ 50 |
+| **Publicação em revista OA (opcional)** | 1 artigo | R$ 2.000 (APC) | R$ 2.000 |
+| **Total** | — | — | **R$ 2.050** |
+
+**Fonte de financiamento:**
+
+- **Pessoal (horas):** Voluntário (pesquisa acadêmica individual).
+- **Infraestrutura:** Recursos próprios (computador pessoal).
+- **Publicação:** A ser decidido (pode ser coberta por bolsa, fundo departamental ou waiver de OA).
+
+**Custos evitados:**
+
+- **Participantes humanos:** R$ 0 (não há recrutamento/incentivos).
+- **Infraestrutura dedicada:** R$ 0 (uso de máquina pessoal).
+- **Ferramentas proprietárias:** R$ 0 (todas open-source).
+
+---
+
+## 16. Cronograma, marcos e riscos operacionais
+
+### 16.1 Macrocronograma (até o início da execução)
+
+**Timeline geral:** 8 semanas (≈2 meses)
+
+| Semana | Marco | Atividades | Responsável | Status |
+|--------|-------|------------|-------------|--------|
+| **S1** | Conclusão do plano | Finalizar seções 14–20, revisão interna, submeter a orientador | PI | Pendente |
+| **S2** | Aprovação do plano | Incorporar feedback, obter aprovação formal do orientador | PI | Pendente |
+| **S3** | Preparação do ambiente | Instalar ferramentas, configurar repositório Git, testar pipeline básico | PI | Pendente |
+| **S4** | Piloto | Executar pipeline em 2 projetos piloto, validar outputs, calibrar parâmetros | PI | Pendente |
+| **S5** | Revisão pós-piloto | Ajustar protocolo, atualizar templates, documentar lições aprendidas | PI | Pendente |
+| **S6** | Seleção da amostra | Construir universo elegível, aplicar estratificação, alocar grupos G1–G4 | PI | Pendente |
+| **S7** | Checklist de prontidão | Revisar Definition of Ready, obter aprovações finais (DPO, orientador) | PI | Pendente |
+| **S8** | **Início da operação** | Começar coleta de dados (clonagem, extração de métricas) | PI | — |
+
+**Datas estimadas (exemplo):**
+
+- **S1:** 12–18/dez/2025
+- **S2:** 19–25/dez/2025
+- **S3:** 26/dez/2025–01/jan/2026
+- **S4:** 02–08/jan/2026
+- **S5:** 09–15/jan/2026
+- **S6:** 16–22/jan/2026
+- **S7:** 23–29/jan/2026
+- **S8 (GO):** 30/jan/2026
+
+---
+
+### 16.2 Dependências entre atividades
+
+**Diagrama de dependências críticas:**
+
+```
+S1 (Plano completo) → S2 (Aprovação) → S3 (Ambiente)
+                                    ↓
+                                  S4 (Piloto) → S5 (Revisão)
+                                                ↓
+                                              S6 (Amostra)
+                                                ↓
+                                              S7 (Prontidão) → S8 (GO)
+```
+
+**Dependências detalhadas:**
+
+1. **S2 depende de S1:**
+   - Orientador só pode aprovar após plano completo (seções 1–20).
+   - **Bloqueio:** Feedback extenso pode atrasar S2 em até 1 semana.
+
+2. **S3 depende de S2:**
+   - Não faz sentido preparar ambiente sem aprovação formal (risco de retrabalho).
+   - **Bloqueio:** Problemas de instalação de ferramentas podem atrasar S3.
+
+3. **S4 depende de S3:**
+   - Piloto exige ambiente funcional (CK, CPD, Lizard, PyDriller instalados).
+   - **Bloqueio:** Falhas no piloto podem exigir ajustes em S3 (loop de retorno).
+
+4. **S5 depende de S4:**
+   - Revisão pós-piloto só ocorre após validação de outputs.
+   - **Bloqueio:** Ajustes grandes no protocolo podem exigir novo piloto (loop).
+
+5. **S6 depende de S5:**
+   - Seleção de amostra depende de parâmetros calibrados no piloto (ex.: thresholds de clones).
+   - **Bloqueio:** Universo elegível pode ser menor que esperado, exigindo redefinição de escopo.
+
+6. **S7 depende de S2, S5, S6:**
+   - Checklist de prontidão verifica aprovação (S2), ambiente (S3), protocolo ajustado (S5) e amostra pronta (S6).
+   - **Bloqueio:** Falta de aprovação de DPO pode atrasar S7.
+
+7. **S8 (GO) depende de S7:**
+   - Início da operação só ocorre após todos os itens de prontidão validados.
+   - **Bloqueio crítico:** Se S7 não for satisfeito, operação é adiada.
+
+---
+
+### 16.3 Riscos operacionais e plano de contingência
+
+**Riscos identificados (pré-execução):**
+
+| ID | Risco | Probabilidade | Impacto | Contingência |
+|----|-------|---------------|---------|--------------|
+| **R1** | Aprovação do orientador atrasada (feedback extenso) | Média | Médio | Buffer de 1 semana em S2; começar S3 paralelamente se feedback for pontual |
+| **R2** | Ferramentas (CK/CPD/Lizard/PyDriller) não instalam ou falham | Baixa | Alto | Preparar alternativas (ex.: NiCad para clones; SourceMeter para métricas); testar em S3 |
+| **R3** | Piloto revela inviabilidade técnica (ex.: CPD não detecta clones) | Média | Alto | Ajustar parâmetros; testar ferramentas alternativas; se falhar, redefinir RQs para métricas disponíveis |
+| **R4** | Universo elegível de projetos é muito pequeno (<50 projetos) | Baixa | Médio | Relaxar critérios de inclusão (ex.: aceitar projetos menores); ampliar linguagens OO |
+| **R5** | Amostra final desbalanceada (poucos projetos em G1 ou G4) | Média | Médio | Re-estratificar com limites ajustados de Dup/Abs; aceitar grupos menores (mín. 4 projetos/grupo) |
+| **R6** | DPO exige mudanças no protocolo de anonimização | Baixa | Baixo | Aplicar mudanças em S5–S7; adiar GO em 1 semana se necessário |
+| **R7** | Falta de tempo/recursos do PI (sobrecarga) | Média | Alto | Priorizar RQs críticas (O2, O3); reduzir tamanho de amostra se necessário; buscar colaborador (revisor técnico) |
+| **R8** | Problemas de infraestrutura (falha de HD, perda de dados) | Baixa | Alto | Backup diário em cloud; usar Git para versionamento; manter cópia redundante de datasets |
+
+**Plano de contingência detalhado (R3 – Piloto revela inviabilidade):**
+
+1. **Diagnóstico rápido:** Identificar ferramenta ou métrica problemática (ex.: CPD não detecta clones em linguagem específica).
+2. **Teste de alternativas:**
+   - Clones: testar **NiCad** ou **CCFinderX**.
+   - Métricas OO: testar **SourceMeter** ou **Understand**.
+   - Complexidade: validar se **Lizard** + **CK** juntos cobrem necessidades.
+3. **Redefinição de escopo (último recurso):**
+   - Se nenhuma ferramenta funcionar para **Dup** (CPD), focar RQs em **Abs** (O2.2, O3.2) e usar proxies de duplicação (ex.: nº de métodos similares via análise manual).
+   - Comunicar mudança ao orientador e ajustar plano (versão 1.1).
+4. **Prazo:** 1 semana adicional para testes; se inviável, redefinir escopo em S5.
+
+**Critério de go/no-go para contingências:**
+
+- **Go com ajustes:** se 80% das métricas essenciais puderem ser extraídas (ex.: 4 de 5 RQs principais).
+- **No-go temporário:** se falhas afetarem >50% das RQs; adiar GO por 2 semanas para resolver.
+- **No-go definitivo:** se problemas técnicos forem insolúveis (ex.: nenhuma ferramenta funcionar); nesse caso, redesenhar o estudo completamente.
+
+---
+
+## 17. Governança do experimento
+
+### 17.1 Papéis e responsabilidades formais
+
+**Matriz RACI (Responsible, Accountable, Consulted, Informed):**
+
+| Atividade | PI | Orientador | DPO | Revisor Técnico |
+|-----------|----|-----------|----|-----------------|
+| **Desenho do experimento** | A/R | C | I | — |
+| **Aprovação do plano** | R | A | I | C |
+| **Execução do pipeline** | A/R | I | — | C |
+| **Análise de dados** | A/R | C | — | C |
+| **Escrita de publicações** | A/R | C | — | — |
+| **Controle de mudanças** | R | A | I | C |
+| **Decisão go/no-go** | R | A | — | — |
+| **Aprovação ética (se aplicável)** | R | C | A | — |
+
+**Legenda:**
+- **A (Accountable):** Responsável final pela decisão.
+- **R (Responsible):** Executa a atividade.
+- **C (Consulted):** Consultado antes da decisão.
+- **I (Informed):** Informado após a decisão.
+
+**Detalhamento de papéis:**
+
+1. **Pesquisador Principal (PI):**
+   - **Decide:** Parâmetros técnicos, amostra, interpretação de resultados.
+   - **Executa:** Coleta, análise, escrita.
+   - **Revisa:** Validação de outputs, checagem de qualidade.
+
+2. **Orientador Acadêmico:**
+   - **Decide:** Aprovação final do plano, go/no-go de publicações.
+   - **Consulta:** Revisão de desenho, discussão de resultados.
+   - **Informado:** Marcos atingidos, mudanças no protocolo.
+
+3. **DPO (se aplicável):**
+   - **Decide:** Conformidade com LGPD/GDPR (se houver dúvidas).
+   - **Informado:** Protocolo de anonimização, retenção de dados.
+
+4. **Revisor Técnico (se disponível):**
+   - **Consulta:** Validação de código, checagem de ferramentas.
+   - **Informado:** Problemas técnicos, ajustes no pipeline.
+
+---
+
+### 17.2 Ritos de acompanhamento pré-execução
+
+**Reuniões e checkpoints planejados:**
+
+| Rito | Frequência | Participantes | Duração | Objetivo |
+|------|------------|---------------|---------|----------|
+| **Revisão do plano (S2)** | Única | PI, Orientador | 1h | Aprovar plano completo, discutir riscos |
+| **Checkpoint pós-piloto (S5)** | Única | PI, Orientador, Revisor (se disponível) | 1h | Validar outputs, decidir ajustes no protocolo |
+| **Reunião de prontidão (S7)** | Única | PI, Orientador | 30min | Revisar checklist de prontidão, dar go/no-go final |
+| **Sync semanal (S3–S7)** | Semanal | PI, Orientador | 30min | Status de atividades, bloqueios, decisões rápidas |
+
+**Conteúdo dos checkpoints:**
+
+1. **Revisão do plano (S2):**
+   - Apresentar seções 14–20 (ética, recursos, cronograma, governança).
+   - Discutir riscos operacionais e plano de contingência.
+   - Obter aprovação formal (ou lista de ajustes necessários).
+
+2. **Checkpoint pós-piloto (S5):**
+   - Mostrar outputs do piloto (métricas, clones, histórico).
+   - Discutir parâmetros calibrados (CPD, CK, Lizard).
+   - Decidir ajustes no protocolo (se necessário).
+   - Validar templates de registro e logs.
+
+3. **Reunião de prontidão (S7):**
+   - Revisar checklist item por item (ver seção 20.1).
+   - Confirmar aprovações (orientador, DPO se aplicável).
+   - Dar **go final** para início da operação em S8.
+
+---
+
+### 17.3 Processo de controle de mudanças no plano
+
+**Tipos de mudança e fluxo de aprovação:**
+
+| Tipo de mudança | Severidade | Quem propõe | Quem aprova | Registro |
+|-----------------|------------|-------------|-------------|----------|
+| **Menor** (ex.: ajuste de parâmetro de ferramenta) | Baixa | PI | PI | Log de decisões (`.md`) |
+| **Moderada** (ex.: mudança em RQ secundária, redução de amostra <20%) | Média | PI | Orientador | Issue no Git + atualização do plano (v1.1) |
+| **Maior** (ex.: exclusão de RQ principal, mudança de desenho) | Alta | PI | Orientador + revisão formal | Reunião extraordinária + nova versão do plano (v2.0) |
+
+
+# Plano de Experimento – Scoping e Planejamento
+
+## 18. Plano de documentação e reprodutibilidade
+
+### 18.1 Repositórios e convenções de nomeação
+
+**Repositório principal:** GitHub público (`experiment-oss-sustainability-2025`) contendo scripts, configurações, templates e dados processados/anônimos.
+
+**Estrutura simplificada:**
+- `docs/`: plano, aprovações, decisões
+- `src/`: scripts do pipeline (seleção, métricas, mineração)
+- `config/`: versões de ferramentas e parâmetros
+- `data/`: dados processados (por RQ)
+- `templates/`: modelos de artefatos
+
+**Convenções:**
+- Projetos: `PROJ_<ID>_<NOME>`
+- Arquivos: `[tipo]_[gran]_[desc].{csv,json}`
+- Scripts: `etapa_descricao.py`
+
+### 18.2 Templates e artefatos padrão
+
+**Templates disponíveis em `/templates/`:**
+- `checklist_prontidao.md`: verificação pré-execução
+- `log_decisoes.md`: registro de decisões metodológicas
+- `protocolo_analise_qualitativa.md`: guia para estudos de caso
+- `template_dataset.json`: esquema para dados por RQ
+- `relatorio_parcial.md`: estrutura para checkpoints
+
+### 18.3 Plano de empacotamento para replicação futura
+
+**Pacote de replicação incluirá:**
+1. **Código**: Todos os scripts do pipeline congelados
+2. **Configurações**: Versões exatas de ferramentas (BOM)
+3. **Dados**: Conjuntos processados e anônimos por RQ
+4. **Instruções**: `README.md` com passos para execução
+5. **Ambiente**: Arquivo `Dockerfile` ou `environment.yml` opcional
+
+## 19. Plano de comunicação
+
+### 19.1 Públicos e mensagens-chave pré-execução
+
+| Público | Mensagens-Chave |
+|---------|-----------------|
+| **Orientador** | Plano completo pronto para revisão; cronograma de 8 semanas; riscos identificados; necessidade de aprovação final |
+| **DPO (se aplicável)** | Explicação do uso de dados públicos; medidas de anonimização; solicitação de parecer consultivo |
+| **Revisor Técnico (opcional)** | Convite para validar pipeline técnico; revisão de parâmetros das ferramentas |
+
+### 19.2 Canais e frequência de comunicação
+
+- **Orientador**: Reuniões semanais de 30min (S3-S7) + reuniões específicas para marcos (S2, S5, S7)
+- **DPO**: Email formal com documentação, resposta esperada em 1 semana
+- **Revisor Técnico**: Issue no GitHub conforme necessidade
+
+### 19.3 Pontos de comunicação obrigatórios
+
+1. **Aprovação do plano** (S2): Formalização por email do orientador
+2. **Resultados do piloto** (S5): Apresentação de ajustes necessários
+3. **Checklist de prontidão** (S7): Confirmação go/no-go para execução
+4. **Mudanças relevantes no protocolo**: Via Issue no GitHub com aprovação do orientador
+
+## 20. Critérios de prontidão para execução (Definition of Ready)
+
+### 20.1 Checklist de prontidão
+
+- [ ] Plano de experimento aprovado pelo orientador
+- [ ] Ambiente configurado (ferramentas instaladas, versões congeladas)
+- [ ] Piloto executado com sucesso (≥80% das métricas extraídas)
+- [ ] Protocolo ajustado conforme lições do piloto
+- [ ] Amostra de projetos selecionada e grupos (G1-G4) formados
+- [ ] Templates de registro e logs preparados
+- [ ] Consulta ao DPO realizada (se aplicável)
+- [ ] Backup e versionamento configurados
+
+### 20.2 Aprovações finais para iniciar a operação
+
+**Aprovadores:**
+1. **Orientador Acadêmico**: "Ok final" após revisão do checklist completo
+2. **Pesquisador Principal**: Auto-checagem de todos os itens
+
+**Registro do aceite:**
+- Email formal do orientador autorizando início
+- Commit no repositório com tag `ready-for-execution-v1.0`
+- Preenchimento e arquivamento do checklist assinado em `/docs/approvals/`
+
